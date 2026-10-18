@@ -236,4 +236,18 @@
     <string name="pulse_quality_fair">Correcte</string>
     <string name="pulse_quality_poor">Dégradée</string>
     <string name="pulse_action_use">Utiliser ce serveur</string>
+
+    <!-- Tunnelage fractionné -->
+    <string name="s_split">Tunnelage fractionné</string>
+    <string name="split_title">Tunnelage fractionné</string>
+    <string name="split_desc">Choisir quelles applications passent par le VPN</string>
+    <string name="split_mode_block">Tout sauf les apps choisies</string>
+    <string name="split_mode_allow">Seulement les apps choisies</string>
+    <string name="split_pick_apps">Choisir les applications</string>
+    <string name="split_pick_subtitle">%1$d application(s) sélectionnée(s)</string>
+    <string name="split_allow_empty_warning">Aucune application sélectionnée : rien ne passera par le VPN.</string>
+    <string name="split_apps_title">Applications</string>
+    <string name="split_apps_search">Rechercher une application…</string>
+    <string name="split_apps_empty">Aucune application trouvée</string>
+    <string name="split_demo_note">Appliqué à la création du tunnel (mode réel).</string>
 </resources>

@@ -75,7 +75,11 @@ class VpnController(
     val stats: StateFlow<TunnelStats?> = _stats.asStateFlow()
 
     /** Démarre le tunnel réel. À appeler UNIQUEMENT après consentement VpnService. */
-    suspend fun connectReal(server: ServerInfo) {
+    suspend fun connectReal(
+        server: ServerInfo,
+        excludedApps: Set<String> = emptySet(),
+        includedApps: Set<String> = emptySet()
+    ) {
         if (stateMachine.state.value != VpnConnectionState.Connecting &&
             stateMachine.state.value != VpnConnectionState.Reconnecting
         ) {
@@ -92,7 +96,7 @@ class VpnController(
             activeSessionId = session.sessionId
             activeSessionServerKey = session.serverPublicKey
 
-            val config = TunnelConfigMapper.build(keyPair, session)
+            val config = TunnelConfigMapper.build(keyPair, session, excludedApps, includedApps)
             val tunnel = GodsonTunnel(server.id)
             activeTunnel = tunnel
 

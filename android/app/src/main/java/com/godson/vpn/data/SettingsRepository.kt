@@ -24,7 +24,9 @@ data class UiSettings(
     val autoReconnect: Boolean = true,
     val keepLastServer: Boolean = true,
     val autoConnectOnStart: Boolean = false,
-    val localHistoryEnabled: Boolean = false
+    val localHistoryEnabled: Boolean = false,
+    val splitTunnelingEnabled: Boolean = false,
+    val splitTunnelingMode: String = "BLOCK"
 )
 
 /**
@@ -50,6 +52,9 @@ class SettingsRepository(private val context: Context) {
         val FAVORITE_COUNTRIES = stringSetPreferencesKey("favorite_countries")
         val RECENT_COUNTRIES = stringPreferencesKey("recent_countries_csv")
         val DEVICE_ID = stringPreferencesKey("device_id")
+        val SPLIT_ENABLED = booleanPreferencesKey("split_tunneling_enabled")
+        val SPLIT_MODE = stringPreferencesKey("split_tunneling_mode")
+        val SPLIT_APPS = stringSetPreferencesKey("split_tunneling_apps")
     }
 
     val uiSettings: Flow<UiSettings> = context.dataStore.data.map { p ->
@@ -89,6 +94,16 @@ class SettingsRepository(private val context: Context) {
             p[Keys.RECENT_COUNTRIES]?.split(',')?.filter { it.isNotBlank() } ?: emptyList()
         }
 
+    val splitTunnelingEnabled: Flow<Boolean> =
+        context.dataStore.data.map { it[Keys.SPLIT_ENABLED] ?: false }
+
+    /** Clé de mode brute ("BLOCK"/"ALLOW") — interprétée par [SplitTunnelPolicy]. */
+    val splitTunnelModeKey: Flow<String> =
+        context.dataStore.data.map { it[Keys.SPLIT_MODE] ?: "BLOCK" }
+
+    val splitTunnelPackages: Flow<Set<String>> =
+        context.dataStore.data.map { it[Keys.SPLIT_APPS] ?: emptySet() }
+
     suspend fun setOnboardingCompleted() {
         context.dataStore.edit { it[Keys.ONBOARDING] = true }
     }
@@ -119,6 +134,22 @@ class SettingsRepository(private val context: Context) {
 
     suspend fun setAutoConnectOnStart(enabled: Boolean) {
         context.dataStore.edit { it[Keys.AUTO_CONNECT] = enabled }
+    }
+
+    suspend fun setSplitTunnelingEnabled(enabled: Boolean) {
+        context.dataStore.edit { it[Keys.SPLIT_ENABLED] = enabled }
+    }
+
+    suspend fun setSplitTunnelMode(storageKey: String) {
+        context.dataStore.edit { it[Keys.SPLIT_MODE] = storageKey }
+    }
+
+    suspend fun toggleSplitTunnelApp(packageName: String) {
+        context.dataStore.edit { p ->
+            val current = p[Keys.SPLIT_APPS] ?: emptySet()
+            p[Keys.SPLIT_APPS] =
+                if (packageName in current) current - packageName else current + packageName
+        }
     }
 
     suspend fun setLastServer(serverId: String) {

@@ -152,6 +152,25 @@ Préparé (code complet, câblé, vérifié statiquement — exécution sur appa
 
 ---
 
+## TUNNELAGE FRACTIONNÉ (split tunneling) — ✅ IMPLÉMENTÉ (validation CI)
+
+- [x] **Logique pure testée** : `data/SplitTunnelPolicy.kt` — modes BLOCK (tout sauf les apps
+      choisies) / ALLOW (seulement les apps choisies) ; garde-fous : l'app GODSON jamais dans
+      le tunnel, avertissement explicite « ALLOW vide », filtre/tri déterministes —
+      **+10 tests** (total projet : 61)
+- [x] **Persistance DataStore** : `split_tunneling_enabled/mode/apps` (SettingsRepository)
+- [x] **Câblage réel** : `TunnelConfigMapper.build(+excludedApps, +includedApps)` via
+      `excludeApplication/includeApplication` — appliqués par GoBackend sur le VpnService.Builder
+      (**vérifié dans son bytecode**) ← `VpnController.connectReal` ← lecture à la demande dans
+      `DashboardViewModel.establishTunnel` (jamais en boucle de fond)
+- [x] **UI** : rangée Réglages (compteur d'apps) + écran `SplitTunnelScreen` (inventaire
+      PackageManager RÉEL — aucune liste fictive, recherche, sélection, avertissement) +
+      route `split_tunneling`
+- [ ] **Mode démo** : réglages persistés mais sans effet tant qu'aucun tunnel réel n'existe
+      (mention affichée dans l'écran)
+
+---
+
 ## Registre des blocages
 
 | Blocage | Contournement | Se débloque par |

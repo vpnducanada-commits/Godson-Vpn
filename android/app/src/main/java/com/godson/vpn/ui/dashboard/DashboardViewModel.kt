@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -164,7 +165,22 @@ class DashboardViewModel(private val container: GodsonContainer) : ViewModel() {
         }
         // Le contrôleur fixe lui-même l'état final : Connected UNIQUEMENT après
         // vérification du tunnel UP + handshake ; sinon Error/ServerUnavailable.
-        container.vpnController.connectReal(server)
+        // Tunnelage fractionné : réglages lus au moment de la connexion
+        // (à la demande, jamais en boucle de fond).
+        val splitEnabled = container.settingsRepository.splitTunnelingEnabled.firstOrNull() ?: false
+        val splitMode = com.godson.vpn.data.SplitTunnelPolicy.Mode.fromStorageKey(
+            container.settingsRepository.splitTunnelModeKey.firstOrNull()
+        )
+        val splitApps = container.settingsRepository.splitTunnelPackages.firstOrNull() ?: emptySet()
+        container.vpnController.connectReal(
+            server,
+            excludedApps = if (splitEnabled) {
+                com.godson.vpn.data.SplitTunnelPolicy.excludedPackages(splitMode, splitApps)
+            } else emptySet(),
+            includedApps = if (splitEnabled) {
+                com.godson.vpn.data.SplitTunnelPolicy.includedPackages(splitMode, splitApps)
+            } else emptySet()
+        )
         if (machine.state.value == VpnConnectionState.Connecting) {
             machine.transitionTo(VpnConnectionState.Error)
             _errorReason.value = ErrorReason.CONNECTION_FAILED

@@ -57,10 +57,12 @@ fun SettingsScreen(
     container: GodsonContainer,
     onOpenPrivacy: () -> Unit,
     onOpenSupport: () -> Unit,
-    onOpenProfile: () -> Unit
+    onOpenProfile: () -> Unit,
+    onOpenSplitApps: () -> Unit
 ) {
     val vm: SettingsViewModel = viewModel(factory = GodsonViewModelFactory(container))
     val s by vm.settings.collectAsStateWithLifecycle()
+    val splitCount by vm.splitPackageCount.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -148,6 +150,25 @@ fun SettingsScreen(
                 control = {
                     GodSwitch(checked = s.autoConnectOnStart, onCheckedChange = vm::setAutoConnect)
                 }
+            )
+        }
+
+        // ── Tunnelage fractionné ─────────────────────────────────────────
+        SectionLabel(
+            stringResource(R.string.s_split),
+            Modifier.padding(start = 20.dp, end = 20.dp, top = 18.dp)
+        )
+        GodsonCard(modifier = Modifier.padding(horizontal = 20.dp)) {
+            SettingRow(
+                icon = Icons.Rounded.Layers,
+                title = stringResource(R.string.split_title),
+                description = if (s.splitTunnelingEnabled) {
+                    stringResource(R.string.split_pick_subtitle, splitCount)
+                } else {
+                    stringResource(R.string.split_desc)
+                },
+                onClick = onOpenSplitApps,
+                control = { Chevron() }
             )
         }
 

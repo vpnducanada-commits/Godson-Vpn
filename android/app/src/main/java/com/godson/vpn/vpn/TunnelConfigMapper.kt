@@ -16,11 +16,23 @@ import com.wireguard.config.InetNetwork
  */
 object TunnelConfigMapper {
 
-    fun build(keyPair: KeyPair, session: VpnSessionResponse): Config {
+    fun build(
+        keyPair: KeyPair,
+        session: VpnSessionResponse,
+        excludedApps: Set<String> = emptySet(),
+        includedApps: Set<String> = emptySet()
+    ): Config {
         val iface = Interface.Builder()
             .parsePrivateKey(keyPair.privateKey.toBase64())   // identité du client (jamais loggée)
             .addAddress(InetNetwork.parse(session.address))   // CIDR du client dans le tunnel
             .parseDnsServers(session.dns)                     // DNS poussé DANS le tunnel (anti-fuite)
+            .apply {
+                // Tunnelage fractionné : GoBackend applique ces ensembles sur le
+                // VpnService.Builder (vérifié dans le bytecode de la lib :
+                // getExcludedApplications → addDisallowedApplication, etc.).
+                excludedApps.forEach { excludeApplication(it) }
+                includedApps.forEach { includeApplication(it) }
+            }
             .build()
 
         val peer = Peer.Builder()

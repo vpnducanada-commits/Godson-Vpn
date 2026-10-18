@@ -52,6 +52,7 @@ import com.godson.vpn.ui.privacy.PrivacyScreen
 import com.godson.vpn.ui.profile.ProfileScreen
 import com.godson.vpn.ui.servers.ServersScreen
 import com.godson.vpn.ui.settings.SettingsScreen
+import com.godson.vpn.ui.settings.SplitTunnelScreen
 import com.godson.vpn.ui.screens.OnboardingScreen
 import com.godson.vpn.ui.screens.SplashScreen
 import com.godson.vpn.ui.stats.StatsScreen
@@ -70,6 +71,7 @@ object Routes {
     const val PRIVACY = "privacy"
     const val SUPPORT = "support"
     const val PROFILE = "profile"
+    const val SPLIT_TUNNELING = "split_tunneling"
 }
 
 private data class BottomItem(val route: String, val labelRes: Int, val icon: ImageVector)
@@ -173,8 +175,12 @@ fun GodsonApp(container: GodsonContainer, settings: UiSettings) {
                     container = container,
                     onOpenPrivacy = { navController.navigate(Routes.PRIVACY) },
                     onOpenSupport = { navController.navigate(Routes.SUPPORT) },
-                    onOpenProfile = { navController.navigate(Routes.PROFILE) }
+                    onOpenProfile = { navController.navigate(Routes.PROFILE) },
+                    onOpenSplitApps = { navController.navigate(Routes.SPLIT_TUNNELING) }
                 )
+            }
+            composable(Routes.SPLIT_TUNNELING) {
+                SplitTunnelScreen(container = container, onBack = { navController.popBackStack() })
             }
             composable(Routes.PRIVACY) {
                 PrivacyScreen(container = container, onBack = { navController.popBackStack() })

@@ -7,6 +7,7 @@ import com.godson.vpn.data.ThemeMode
 import com.godson.vpn.data.UiSettings
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -17,6 +18,11 @@ class SettingsViewModel(private val container: GodsonContainer) : ViewModel() {
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UiSettings())
 
     val versionName: String = com.godson.vpn.BuildConfig.VERSION_NAME
+
+    /** Nombre d'apps du tunnelage fractionné (affiché sur la rangée Réglages). */
+    val splitPackageCount: StateFlow<Int> = container.settingsRepository.splitTunnelPackages
+        .map { it.size }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
 
     fun setTheme(mode: ThemeMode) = viewModelScope.launch {
         container.settingsRepository.setThemeMode(mode)
