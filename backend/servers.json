@@ -1,0 +1,16 @@
+{
+  "servers": [
+    {
+      "id": "fr-par-01",
+      "countryCode": "FR",
+      "city": "Paris",
+      "hostname": "REMPLACE_PAR_INSTALLATEUR.example.duckdns.org",
+      "port": 51820,
+      "protocol": "WireGuard",
+      "status": "AVAILABLE",
+      "pingMs": null,
+      "loadPercent": null,
+      "recommended": true
+    }
+  ]
+}

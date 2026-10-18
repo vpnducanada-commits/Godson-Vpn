@@ -104,7 +104,23 @@ Règle : ne jamais marquer « terminé » sans vérification.
 
 ---
 
-## PHASE 4/5 — Architecture backend + WireGuard réelle — 🟡 ARCHITECTURE EN PLACE (non testée sur appareil)
+## PHASE 4/5 — Backend RÉEL prêt à déployer — 🟢 CODE COMPLET ET TESTÉ (déploiement = 1 commande)
+
+- [x] **backend/server.py** : API v1 exacte de l'app (health, servers, vpn/session,
+      DELETE) en Python standard (0 dépendance) ; une session = un pair WireGuard
+      (/32 dédié, révoqué au DELETE) ; aucune clé dans les journaux ; erreurs
+      {"error":{code,message}} conformes
+- [x] **Testé ici-même** (mode dry-run WireGuard) : cycle complet créer→supprimer→404,
+      contrats JSON **programmatiquement conformes aux DTO Kotlin**, correction d'un bug
+      DELETE attrapé par le test (chemin à 5 segments)
+- [x] **backend/install.sh** : installation VPS en UNE commande (WireGuard + clés serveur
+      + NAT + systemd + Caddy HTTPS Let's Encrypt + pare-feu + auto-vérification) —
+      guide téléphone complet dans **docs/09_BACKEND_SERVEUR_REEL.md** (DuckDNS gratuit)
+- [ ] **Reste (porteur)** : louer le VPS (ou Oracle Free), créer le sous-domaine DuckDNS,
+      coller la commande du docs/09 §3, puis donner l'URL → l'APK est reconstruit en mode
+      RÉEL par la CI
+
+## PHASE 4/5 (historique) — Architecture backend + WireGuard — 🟡 ARCHITECTURE EN PLACE (non testée sur appareil)
 
 Préparé (code complet, câblé, vérifié statiquement — exécution sur appareil restante) :
 
