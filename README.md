@@ -5,90 +5,63 @@
 
 ---
 
-## ⚠️ Avertissement important (honnêteté technique)
-
-Cet espace de travail **ne permet pas de compiler un APK** (pas d'Android SDK, pas de JDK 17, et le
-dossier `build/` n'est pas persisté). En conséquence :
-
-- Ce dépôt contient le **code source Android réel et buildable** — pas un site web prétendant être un VPN.
-- La **maquette interactive** (`demo/godson_vpn_demo.html`) est une **prévisualisation de design clairement
-  identifiée** : données fictives, aucune connexion VPN réelle. Elle ne remplace pas l'application.
-- **Aucun faux état « connecté », aucune fausse adresse IP, aucun faux serveur actif** : tout ce qui n'est
-  pas encore branché est marqué comme tel dans le code et l'interface.
-
-## 📊 État d'avancement
+## ⚡ État réel (vérifié, daté)
 
 | Phase | Contenu | Statut |
 |---|---|---|
 | 1 | Analyse & architecture | ✅ Terminée |
-| 2 | Identité visuelle, design system, écrans (**refonte premium v2 appliquée**) | ✅ Terminée |
-| 3 | Fonctionnement applicatif (polices Inter, EN/PT natifs, split tunneling) | 🔲 À venir |
-| 4 | Backend & catalogue de serveurs réel | 🔲 À venir |
-| 5 | Intégration VPN réelle (WireGuard / VpnService) | 🔲 À venir |
-| 6 | Tests & sécurité | 🔲 À venir |
-| 7 | Build, signature, publication | 🔲 À venir |
+| 2 | Identité visuelle, design system, écrans (refonte premium) | ✅ Terminée |
+| 3 | Fonctionnement applicatif : **police Inter**, **i18n natif FR/EN/PT** (220 clés × 3, parité vérifiée), **tunnelage fractionné** | ✅ Terminée |
+| 4 | Backend & catalogue réels — **code complet et testé** (`backend/server.py` + installateur VPS en 1 commande, `docs/09`) | 🟢 Déploiement restant (VPS + domaine) |
+| 5 | Intégration VPN réelle (WireGuard/VpnService) — **code compilé**, split tunneling câblé (vérifié au bytecode de la lib) | 🟠 Test sur serveur restant |
+| 6 | Tests & sécurité — **61 tests unitaires verts en CI**, manifeste minimal (allowBackup=false, cleartext interdit), 0 secret/log sensible | 🟡 Instrumentés + fuites restants (appareil/backend) |
+| 7 | Build, signature, publication — **CI : APK debug à chaque push + job release (APK/AAB signés par secrets)**, kit Play (docs/08) | 🟡 Compte Play + hébergement restants |
 
-Détail : [`docs/02_PLAN_REALISATION.md`](docs/02_PLAN_REALISATION.md)
+**Chaîne de compilation** : GitHub Actions (JDK 17 Temurin + SDK 36) — verte.
+**Version** : `0.3.0-phase3`.
 
-## 🗂️ Arborescence
+## 📱 Essayer maintenant
+
+1. Onglet **Actions** du dépôt → dernier run vert → artefact **`app-debug-apk`**.
+2. Installer (Android 8.0+). L'app démarre en **mode démonstration honnête** :
+   catalogue étiqueté DÉMO, GODSON PULSE (évaluation déterministe), favoris/récents,
+   split tunneling (réglages persistés), FR/EN/PT (langue par application, Android 13+).
+3. Toute tentative de connexion affiche l'état **réel** (backend absent) — jamais de
+   faux « Connecté ». C'est voulu.
+
+## 🌍 Passer en VPN RÉEL
+
+Tout est prêt : **`docs/09_BACKEND_SERVEUR_REEL.md`** (VPS ~4-5 €/mois ou Oracle Free,
+domaine gratuit DuckDNS, **une commande** d'installation, puis bascule `API_BASE_URL` →
+APK reconstruit en mode réel par la CI). Le backend (`backend/`) est testé de bout en
+bout (sessions = pairs WireGuard révocables, contrat conforme aux DTO de l'app).
+
+## 🔐 Sécurité — principes appliqués
+
+- Clé privée WireGuard générée **sur l'appareil**, jamais transmise, jamais journalisée.
+- TLS automatique (Let's Encrypt) côté backend ; transports HTTPS uniquement.
+- Permissions minimales ; `allowBackup=false` ; aucun log de données sensibles en release.
+- Étiquetage strict démo/réel (`data/AppMode.kt`) : aucune donnée simulée présentée comme réelle.
+
+## 🗂️ Structure
 
 ```
-GodsonVPN/
-├── README.md                  ← ce fichier
-├── docs/                      ← documentation
-│   ├── 01_PHASE1_ARCHITECTURE.md
-│   ├── 02_PLAN_REALISATION.md
-│   └── 03_DESIGN_SYSTEM.md    ← design system v2 (couleurs, type, mouvement, composants)
-├── android/                   ← PROJET ANDROID RÉEL (ouvrir dans Android Studio)
-│   ├── settings.gradle.kts
-│   ├── gradle/libs.versions.toml
-│   └── app/src/main/
-│       ├── java/com/godson/vpn/
-│       │   ├── navigation/    ← GodsonApp : 9 routes, transitions 240 ms
-│       │   ├── ui/components/ ← design system (GodsonCard, FlagEmojiBadge, SignalBars…)
-│       │   ├── ui/country/    ← « Choisir un pays » : 30 pays / 6 régions, filtres, favoris
-│       │   ├── ui/dashboard/  ← bouton à anneaux, statut réel, VpnService réel
-│       │   ├── ui/servers/    ← recherche, favoris persistants, skeletons
-│       │   ├── ui/stats/      ← durées de session réelles + chronologie
-│       │   ├── ui/settings/   ← interrupteurs fonctionnels persistés
-│       │   ├── ui/privacy/ · ui/support/ · ui/profile/
-│       │   ├── vpn/           ← VpnStateMachine (testée) + GodsonVpnService
-│       │   └── data/          ← DataStore, catalogue démo, filtres testés
-│       └── res/               ← logo GV, chaînes FR, thème
-├── demo/
-│   └── godson_vpn_demo.html   ← maquette de référence (données fictives, FR/EN/PT)
-└── brand/                     ← logo GV : 4 variantes SVG + règles d'usage
+android/          Application Kotlin/Compose (module :app), tests JUnit (61)
+backend/          Backend v1 (Python stdlib) + installateur VPS + catalogue serveurs
+docs/01…09        Architecture, plan, design, infra WireGuard, build, audit, PULSE,
+                  Termux, publication Play, VPN réel
+brand/            Identité (logo officiel, SVG maîtres)
+demo/             Maquette HTML interactive (design uniquement, étiquetée)
+.github/workflows CI (build debug + release signée manuelle)
 ```
 
-## 🚀 Démarrage rapide
+## 📚 Documentation clé
 
-### Voir l'interface tout de suite
-Ouvrir `demo/godson_vpn_demo.html` dans un navigateur (ou dans l'aperçu). C'est une **maquette** :
-navigation complète, bouton de connexion simulé (clairement étiqueté), thème clair/sombre, FR/EN/PT.
+- **docs/02** : plan de réalisation détaillé (statuts par chantier, preuves).
+- **docs/04** : infrastructure WireGuard exacte. **docs/05** : build/tests locaux.
+- **docs/07** : compiler sur le téléphone (Termux). **docs/08** : signature + Play Store.
+- **docs/09** : mettre un vrai serveur en ligne en une commande.
 
-### Construire l'application Android réelle
-1. Installer **Android Studio** (Ladybug ou plus récent) avec **JDK 17+** (fourni par Studio).
-2. Ouvrir le dossier `android/` dans Android Studio.
-3. Laisser Studio générer le wrapper Gradle s'il le demande (Gradle 8.13 attendu) et synchroniser
-   (téléchargement des dépendances, dont `com.wireguard.android:tunnel`).
-4. `Run ▶` sur un appareil ou émulateur **API 26+**.
+---
 
-> **Étapes exactes, parcours de test complet et vérifications de fuite** :
-> [`docs/05_BUILD_AND_TEST.md`](docs/05_BUILD_AND_TEST.md).
-> **Infrastructure serveur (VPS, domaine, clés WireGuard)** :
-> [`docs/04_WIREGUARD_INFRA.md`](docs/04_WIREGUARD_INFRA.md).
-> En mode actuel (DÉMO), la connexion affiche volontairement une erreur explicite :
-> aucun tunnel n'est établi tant qu'aucun backend réel n'est configuré.
-
-## 📚 Documentation
-
-| Document | Contenu |
-|---|---|
-| `docs/01_PHASE1_ARCHITECTURE.md` | Architecture, choix techniques, sécurité, limites, ressources humaines requises |
-| `docs/02_PLAN_REALISATION.md` | Plan des 7 phases, livrables, blocages |
-
-## ⚖️ Licences
-
-- Code du projet : à définir par le porteur du projet (proposition : propriétaire ou GPL-3.0).
-- `com.wireguard.android:tunnel` : Apache License 2.0 — compatible, attribution conservée.
-- WireGuard est une marque de Jason A. Donenfeld — utilisation conforme aux règles de la marque.
+*Aucun faux état « connecté », aucune donnée simulée présentée comme réelle — par conception.*

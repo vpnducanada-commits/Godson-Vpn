@@ -21,6 +21,9 @@ jobs:
           java-version: '17'
           cache: gradle
 
+      - name: Rendre gradlew exécutable (robustesse, indépendant du poste de dev)
+        run: chmod +x gradlew
+
       - name: Diagnostic — versions réellement utilisées
         run: |
           java -version
@@ -70,6 +73,9 @@ jobs:
           distribution: temurin
           java-version: '17'
           cache: gradle
+
+      - name: Rendre gradlew exécutable (robustesse)
+        run: chmod +x gradlew
 
       - name: Décoder le keystore (secret KEYSTORE_BASE64)
         env:
