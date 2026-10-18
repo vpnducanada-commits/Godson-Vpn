@@ -68,6 +68,9 @@ class VpnController(
 
     /** Clé publique du serveur de la session active (pour lire les statistiques par pair). */
     private var activeSessionServerKey: String? = null
+
+    /** Paquet de l'app elle-même (défini par le ViewModel, réel en debug comme en release). */
+    var selfPackageForSplit: String? = null
     private var activeTunnel: GodsonTunnel? = null
     private var activeSessionId: String? = null
 
@@ -96,7 +99,11 @@ class VpnController(
             activeSessionId = session.sessionId
             activeSessionServerKey = session.serverPublicKey
 
-            val config = TunnelConfigMapper.build(keyPair, session, excludedApps, includedApps)
+            val config = TunnelConfigMapper.build(
+                keyPair, session,
+                excludedApps = excludedApps + listOfNotNull(selfPackageForSplit),
+                includedApps = includedApps - listOfNotNull(selfPackageForSplit)
+            )
             val tunnel = GodsonTunnel(server.id)
             activeTunnel = tunnel
 

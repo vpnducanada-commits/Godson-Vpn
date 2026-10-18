@@ -73,6 +73,7 @@ class SplitTunnelViewModel(private val container: GodsonContainer) : ViewModel()
             installed.value = withContext(Dispatchers.Default) {
                 runCatching {
                     pm.getInstalledApplications(0).mapNotNull { info ->
+                        if (info.packageName == container.appContext.packageName) return@mapNotNull null
                         if (pm.getLaunchIntentForPackage(info.packageName) == null) return@mapNotNull null
                         val label = runCatching {
                             pm.getApplicationLabel(info).toString()

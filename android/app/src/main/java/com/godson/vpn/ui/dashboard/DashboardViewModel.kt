@@ -181,6 +181,10 @@ class DashboardViewModel(private val container: GodsonContainer) : ViewModel() {
                 com.godson.vpn.data.SplitTunnelPolicy.includedPackages(splitMode, splitApps)
             } else emptySet()
         )
+        // Garde-fou supplémentaire : l'app elle-même n'est JAMAIS dans le tunnel
+        // (nom de paquet réel — identique en release, suffixé « .debug » en debug).
+        if (splitEnabled) container.vpnController.selfPackageForSplit =
+            container.appContext.packageName
         if (machine.state.value == VpnConnectionState.Connecting) {
             machine.transitionTo(VpnConnectionState.Error)
             _errorReason.value = ErrorReason.CONNECTION_FAILED

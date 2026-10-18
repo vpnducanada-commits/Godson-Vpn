@@ -171,6 +171,22 @@ Préparé (code complet, câblé, vérifié statiquement — exécution sur appa
 
 ---
 
+## PHASE 3 — Fonctionnement applicatif — ✅ LIVRÉ (polices Inter, EN/PT natifs, split tunneling)
+
+- [x] **Split tunneling** : voir section dédiée ci-dessus (logique testée, DataStore, UI,
+      câblage GoBackend vérifié au bytecode) — 10 tests
+- [x] **Police Inter embarquée** (OFL, release officielle rsms v4.1) : 4 graisses dans
+      `res/font/`, `InterFamily` branchée sur les 10 styles (tailles en sp — respect de la
+      police système de l'utilisateur conservée)
+- [x] **i18n natif EN/PT** : `values-en/` + `values-pt/` (220 clés chacune, parité et
+      placeholders vérifiées automatiquement) + `resourceConfigurations(fr,en,pt)` +
+      `locales_config.xml` (langue par application, Android 13+) — français reste la langue
+      par défaut
+- [x] **Garde-fou exécution** : l'app elle-même est exclue du tunnel via le nom de paquet
+      RÉEL (identique en release, suffixé `.debug` en debug)
+
+---
+
 ## Registre des blocages
 
 | Blocage | Contournement | Se débloque par |
