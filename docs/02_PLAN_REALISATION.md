@@ -89,11 +89,18 @@ Règle : ne jamais marquer « terminé » sans vérification.
 
 ---
 
-## PHASE 7 — Préparation à la publication — 🔲
+## PHASE 7 — Préparation à la publication — 🟡 CHAÎNE OPÉRATIONNELLE (compte Play et hébergement restants)
 
-- [ ] Procédure de génération d'APK/AAB + signature (keystore géré par le porteur du projet)
-- [ ] Checklist Google Play (déclarations VPN, `specialUse`, données, classification du contenu)
-- [ ] Notes de version, guide de reprise par un développeur
+- [x] **Génération APK/AAB automatisée** : job CI `release` (déclenchement manuel) construisant
+      APK + AAB **signés** à partir des secrets du dépôt — procédure complète sans ordinateur
+      dans `docs/08_PUBLICATION_PLAY.md`
+- [x] **Signature release** : `signingConfigs` pilotée par l'environnement (secrets CI) ; repli
+      documenté clé debug (essai sideload uniquement, jamais Play)
+- [x] **Version** : `0.3.0-phase3` (code 3) — phases 1 à 3 livrées
+- [x] **Checklist Play** : déclarations VPN/specialUse prêtes, Data Safety formulable (aucune
+      donnée collectée), notes de version FR/EN/PT rédigées, guide de reprise développeur
+- [ ] **Bloqué porteur** : compte Google Play (25 $), URL publique de politique de confidentialité
+- [ ] **Bloqué infra** : vrais serveurs (Phase 4/5) avant piste de production
 
 ---
 

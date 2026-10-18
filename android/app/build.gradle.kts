@@ -13,13 +13,27 @@ android {
         applicationId = "com.godson.vpn"
         minSdk = 26          // Android 8.0 — couvre la quasi-totalité des appareils actifs
         targetSdk = 36       // Exigence Google Play depuis le 31/08/2026
-        versionCode = 1
-        versionName = "0.1.0-phase1"
+        versionCode = 3
+        versionName = "0.3.0-phase3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables { useSupportLibrary = true }
 
         resourceConfigurations += listOf("fr", "en", "pt")
+    }
+
+    signingConfigs {
+        create("release") {
+            // Rempli uniquement quand les secrets CI sont présents (voir docs/08) ;
+            // sinon la config reste vide et le repli ci-dessous s'applique.
+            val ksPath = System.getenv("KEYSTORE_FILE")
+            if (ksPath != null) {
+                storeFile = file(ksPath)
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+            }
+        }
     }
 
     buildTypes {
@@ -33,6 +47,13 @@ android {
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             buildConfigField("String", "API_BASE_URL", "\"https://api.godsonvpn.example.invalid\"")
+            // Secrets CI présents → signature release (Play) ; sinon clé debug
+            // (APK installable pour essai sideload — PAS pour la publication Play).
+            signingConfig = if (System.getenv("KEYSTORE_FILE") != null) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 
