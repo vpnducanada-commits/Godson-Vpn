@@ -30,7 +30,7 @@ class SplitTunnelPolicyTest {
     // ── Assainissement de la sélection ───────────────────────────────────
 
     @Test
-    fun `la sélection est assainie : paquet de l app et entrées vides retirés`() {
+    fun `la sélection est assainie (paquet de l app et entrées vides retirés)`() {
         val input = setOf("com.a", "com.godson.vpn", "", "  ", "com.b")
         assertEquals(setOf("com.a", "com.b"), SplitTunnelPolicy.sanitizeSelection(input))
     }
