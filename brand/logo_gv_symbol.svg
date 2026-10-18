@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+  <!-- GODSON VPN — symbole officiel (vectorisation de brand/logo_official.png) :
+       anneau « goutte » évoquant le G et le bouclier, V central, dégradé bleu → cyan. -->
+  <defs>
+    <linearGradient id="gvRing" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#246BFD"/>
+      <stop offset="1" stop-color="#21D4FD"/>
+    </linearGradient>
+    <linearGradient id="gvVee" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2E5BFF"/>
+      <stop offset="1" stop-color="#21C9FD"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#gvRing)" fill-rule="evenodd"
+        d="M60,6 C32,6 14,26 14,50 C14,72 30,87 60,110 C90,87 106,72 106,50 C106,26 88,6 60,6 Z
+           M60,21 C42,21 29,33 29,50 C29,64 39,74 60,90 C81,74 91,64 91,50 C91,33 78,21 60,21 Z"/>
+  <path fill="url(#gvVee)" fill-rule="evenodd"
+        d="M37,36 L83,36 L60,86 Z M49,36 L71,36 L60,57 Z"/>
+</svg>

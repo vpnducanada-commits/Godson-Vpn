@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Palette officielle Godson VPN (miroir XML de ui/theme/Color.kt) -->
+    <color name="midnight_navy">#07111F</color>
+    <color name="deep_navy">#0B1730</color>
+    <color name="electric_blue">#246BFD</color>
+    <color name="cyber_cyan">#21D4FD</color>
+    <color name="soft_white">#F5F8FF</color>
+    <color name="slate_gray">#91A0B8</color>
+    <color name="success_green">#25D695</color>
+    <color name="warning_amber">#FFB547</color>
+    <color name="error_red">#FF5364</color>
+    <color name="ic_launcher_background">#07111F</color>
+</resources>

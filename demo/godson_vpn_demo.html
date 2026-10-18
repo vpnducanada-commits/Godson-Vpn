@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Godson VPN — Maquette de référence (démo)</title>
+<style>
+  /* ═══ Design system Godson VPN v2 — Premium Cybersecurity ═══ */
+  :root{
+    --bg:#07111F; --surface:#0B1730; --panel:#0F1D3C; --line:rgba(145,160,184,.18);
+    --txt:#F5F8FF; --muted:#91A0B8; --blue:#246BFD; --blue2:#1A56D6; --cyan:#21D4FD;
+    --green:#25D695; --amber:#FFB547; --red:#FF5364;
+    --r-s:10px; --r-m:16px; --r-l:20px;
+  }
+  body.light{
+    --bg:#EFF4FD; --surface:#FFFFFF; --panel:#E6EEFB; --line:rgba(11,23,48,.14);
+    --txt:#0B1730; --muted:#5A6B85;
+  }
+  *{box-sizing:border-box; margin:0; -webkit-tap-highlight-color:transparent}
+  body{font-family:-apple-system,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+    background:#03080F; color:var(--txt); font-size:15px; line-height:1.5}
+  #phone{max-width:430px; margin:0 auto; min-height:100dvh; background:var(--bg);
+    display:flex; flex-direction:column; position:relative; box-shadow:0 0 70px rgba(33,212,253,.05)}
+  .pad{padding:0 20px}
+  button{font:inherit; color:inherit; background:none; border:none; cursor:pointer}
+  button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--cyan); outline-offset:2px}
+  .muted{color:var(--muted)} .small{font-size:12.5px} .row{display:flex; align-items:center; justify-content:space-between; gap:10px}
+  h1{font-size:22px; font-weight:700} h2{font-size:16px; font-weight:600}
+
+  #demobadge{position:fixed; bottom:10px; left:50%; transform:translateX(-50%); z-index:90;
+    background:rgba(255,181,71,.10); border:1px solid rgba(255,181,71,.45); color:var(--amber);
+    font-size:10.5px; padding:4px 12px; border-radius:999px; letter-spacing:.5px; white-space:nowrap}
+
+  .card{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-l); padding:16px}
+  .tile{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-m); padding:12px 14px; flex:1}
+  .tile .k{font-size:11px; color:var(--muted); letter-spacing:.4px; text-transform:uppercase; font-weight:600}
+  .tile .v{font-size:15px; font-weight:600; margin-top:3px}
+  .badge-demo{display:inline-flex; border:1px solid rgba(255,181,71,.55); color:var(--amber);
+    font-size:10px; font-weight:700; letter-spacing:1px; padding:2px 8px; border-radius:999px}
+
+  .topbar{display:flex; align-items:center; gap:10px; padding:14px 20px 10px}
+  .brand{font-weight:800; letter-spacing:2.6px; font-size:13px}
+  .iconbtn{width:38px; height:38px; border-radius:12px; display:inline-flex; align-items:center;
+    justify-content:center; background:var(--surface); border:1px solid var(--line); color:var(--muted)}
+  .svc{display:inline-flex; align-items:center; gap:6px; background:var(--surface);
+    border:1px solid var(--line); border-radius:999px; padding:6px 11px; font-size:11.5px; color:var(--muted)}
+  .svc .dot{width:8px; height:8px; border-radius:50%}
+
+  .connectzone{position:relative; height:330px; display:flex; align-items:center; justify-content:center}
+  .netbg{position:absolute; inset:0; pointer-events:none}
+  .bigbtn{position:relative; width:196px; height:196px; border-radius:50%; z-index:2;
+    background:radial-gradient(circle at 50% 32%, var(--panel), var(--surface) 72%);
+    border:1.4px solid; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:6px; transition:border-color .35s, box-shadow .5s; cursor:pointer}
+  .bigbtn:active{transform:scale(.96)}
+  .rings{position:absolute; width:246px; height:246px; pointer-events:none}
+  .bicon{color:var(--blue)} .blabel{font-size:13.5px; font-weight:600; text-align:center; padding:0 18px}
+  .bigbtn.st-disconnected{border-color:rgba(145,160,184,.45); box-shadow:0 0 40px rgba(33,212,253,.06)}
+  .bigbtn.st-disconnected .bicon,.bigbtn.st-disconnected .blabel{color:var(--blue)}
+  .bigbtn.st-connecting,.bigbtn.st-preparing,.bigbtn.st-reconnecting,.bigbtn.st-disconnecting{border-color:rgba(33,212,253,.55)}
+  .bigbtn.st-connecting .bicon,.bigbtn.st-connecting .blabel{color:var(--cyan)}
+  .bigbtn.st-connected{border-color:rgba(37,214,149,.6); box-shadow:0 0 52px rgba(37,214,149,.13)}
+  .bigbtn.st-connected .bicon,.bigbtn.st-connected .blabel{color:var(--green)}
+  .bigbtn.st-error,.bigbtn.st-unavailable{border-color:rgba(255,83,100,.55)}
+  .bigbtn.st-error .bicon,.bigbtn.st-error .blabel,.bigbtn.st-unavailable .bicon{color:var(--red)}
+  @keyframes spin{from{transform:rotate(0)} to{transform:rotate(360deg)}}
+  @keyframes breathe{0%,100%{opacity:.35} 50%{opacity:.8}}
+
+  .statusline{font-size:15px; font-weight:600; text-align:center; padding:0 30px}
+  .hintline{font-size:12.5px; color:var(--muted); text-align:center; padding:6px 34px 0}
+
+  .btn{display:block; width:100%; padding:14px; border-radius:var(--r-m); font-weight:700; font-size:14.5px;
+    text-align:center; background:linear-gradient(90deg,var(--blue),var(--blue2)); color:#fff; transition:transform .12s}
+  .btn:active{transform:scale(.98)}
+  .btn.ghost{background:var(--surface); border:1px solid var(--line); color:var(--txt); font-weight:600}
+  .btn.danger{background:var(--red)}
+  .btn.small{width:auto; padding:10px 16px; font-size:13px}
+
+  .chiprow{display:flex; gap:8px; padding:10px 0 6px; overflow-x:auto; scrollbar-width:none}
+  .chip{padding:8px 13px; border-radius:999px; font-size:12.5px; font-weight:600; white-space:nowrap;
+    background:var(--surface); border:1px solid var(--line); color:var(--muted)}
+  .chip.on{background:rgba(36,107,253,.2); border-color:rgba(36,107,253,.7); color:var(--blue)}
+  .search{display:flex; align-items:center; gap:9px; background:var(--surface); border:1px solid var(--line);
+    border-radius:var(--r-m); padding:12px 14px; margin-top:4px}
+  .search input{flex:1; background:none; border:none; color:var(--txt); font:inherit; outline:none; min-width:0}
+  .slist{display:flex; flex-direction:column; gap:9px; padding:10px 0 90px}
+  .srow{display:flex; align-items:center; gap:11px; text-align:left; width:100%;
+    background:var(--surface); border:1px solid var(--line); border-radius:var(--r-l); padding:13px 14px;
+    transition:transform .12s, border-color .25s, background .25s; animation:cardin .24s both}
+  .srow:active{transform:scale(.985)}
+  .srow.selected{border-color:rgba(36,107,253,.8); background:rgba(36,107,253,.10)}
+  .srow.soon{opacity:.62}
+  @keyframes cardin{from{opacity:0; transform:translateY(18px)} to{opacity:1; transform:none}}
+  .flag{font-size:26px; width:42px; flex:none; text-align:center;
+    filter:drop-shadow(0 1px 3px rgba(0,0,0,.35))}
+  .flag.small{font-size:20px; width:32px}
+  .meta{flex:1; min-width:0}
+  .meta .name{font-weight:600; font-size:14.5px}
+  .meta .sub{font-size:12px; color:var(--muted); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .meta .st{display:flex; align-items:center; gap:6px; margin-top:3px; font-size:11.5px; font-weight:600}
+  .sdot{width:7px; height:7px; border-radius:50%}
+  .heart{color:var(--muted); padding:6px; border-radius:10px}
+  .heart.on{color:var(--red)}
+  .ping{text-align:right; font-weight:600; color:var(--cyan); font-size:14px}
+  .ping small{display:block; color:var(--amber); font-size:9.5px; letter-spacing:.6px; font-weight:700}
+  .selcheck{color:var(--blue); flex:none}
+
+  .skel{height:74px; border-radius:var(--r-m); background:var(--surface); border:1px solid var(--line);
+    position:relative; overflow:hidden}
+  .skel::after{content:''; position:absolute; inset:0; background:linear-gradient(100deg,transparent 30%,
+    rgba(145,160,184,.14) 50%, transparent 70%); animation:shimmer 1.1s infinite}
+  @keyframes shimmer{from{transform:translateX(-100%)} to{transform:translateX(100%)}}
+
+  .nav{position:sticky; bottom:0; margin-top:auto; display:flex; background:var(--surface);
+    border-top:1px solid var(--line); padding:7px 8px calc(9px + env(safe-area-inset-bottom)); z-index:50}
+  .navitem{flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:7px 0 5px;
+    color:var(--muted); font-size:11px; border-radius:14px; transition:color .22s}
+  .navitem .ind{width:22px; height:3px; border-radius:2px; background:transparent; transition:background .22s}
+  .navitem.on{color:var(--cyan)} .navitem.on .ind{background:var(--cyan)}
+
+  .subhead{display:flex; align-items:center; gap:6px; padding:12px 16px 2px}
+  .subhead h1{font-size:21px; flex:1}
+  .subhead .sub{font-size:13px; color:var(--muted); padding:2px 20px 8px}
+  .backbtn{width:38px; height:38px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:var(--muted)}
+  .sect{font-size:11.5px; letter-spacing:1.4px; text-transform:uppercase; color:var(--muted); font-weight:700; margin:20px 24px 8px}
+  .setrow{display:flex; align-items:center; gap:12px; padding:12px 14px; width:100%; text-align:left}
+  .setrow .ic{width:38px; height:38px; border-radius:10px; background:rgba(36,107,253,.14);
+    display:flex; align-items:center; justify-content:center; color:var(--cyan); flex:none}
+  .setrow .lab{flex:1; min-width:0}
+  .setrow .lab .t{font-size:14.5px} .setrow .lab .d{font-size:12px; color:var(--muted); margin-top:2px}
+  .switch{width:46px; height:27px; border-radius:999px; background:var(--panel); border:1px solid var(--line);
+    position:relative; flex:none; transition:background .2s, border-color .2s}
+  .switch::after{content:''; position:absolute; top:2.5px; left:3px; width:20px; height:20px; border-radius:50%;
+    background:var(--muted); transition:all .2s}
+  .switch.on{background:rgba(36,107,253,.4); border-color:var(--blue)}
+  .switch.on::after{left:21px; background:var(--cyan)}
+  select{background:var(--panel); color:var(--txt); border:1px solid var(--line); border-radius:10px; padding:7px 10px; font:inherit}
+  .themepick{display:flex; gap:6px}
+  .themepick button{padding:6px 10px; border-radius:999px; font-size:12px; font-weight:600;
+    background:var(--panel); border:1px solid var(--line); color:var(--muted)}
+  .themepick button.on{background:rgba(36,107,253,.18); border-color:rgba(36,107,253,.7); color:var(--blue)}
+
+  .faq{background:var(--surface); border:1px solid var(--line); border-radius:var(--r-l); overflow:hidden}
+  .faq .q{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:15px 16px; font-weight:600; font-size:14.5px; width:100%; text-align:left}
+  .faq .a{max-height:0; overflow:hidden; transition:max-height .25s ease, padding .25s ease; padding:0 16px; color:var(--muted); font-size:13.5px}
+  .faq.open .a{max-height:260px; padding:0 16px 15px}
+  .faq .q svg{transition:transform .25s} .faq.open .q svg{transform:rotate(180deg)}
+
+  .center{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:32px}
+  .brandname{font-size:22px; font-weight:800; letter-spacing:5.5px; margin-top:24px}
+  .tagline{color:var(--muted); font-size:13px; margin-top:8px; letter-spacing:.3px}
+  .prog{width:120px; height:3px; border-radius:2px; background:var(--panel); overflow:hidden; margin-top:36px}
+  .prog i{display:block; height:100%; width:40%; background:var(--cyan); border-radius:2px; animation:load 1.3s ease forwards}
+  @keyframes load{from{width:5%} to{width:100%}}
+  .dots{display:flex; gap:7px; justify-content:center; padding:14px 0}
+  .dots i{width:8px; height:8px; border-radius:999px; background:var(--line); transition:all .22s}
+  .dots i.on{width:22px; background:var(--cyan)}
+
+  #toasts{position:fixed; bottom:52px; left:50%; transform:translateX(-50%); z-index:95; display:flex; flex-direction:column; gap:8px; width:min(92vw,390px)}
+  .toast{background:var(--panel); border:1px solid var(--line); border-radius:13px; padding:11px 15px;
+    font-size:13.5px; box-shadow:0 10px 30px rgba(0,0,0,.45); animation:tin .24s ease}
+  .toast.ok{border-color:rgba(37,214,149,.5)} .toast.err{border-color:rgba(255,83,100,.55)} .toast.warn{border-color:rgba(255,181,71,.55)}
+  @keyframes tin{from{opacity:0; transform:translateY(8px)}}
+  .overlay{position:fixed; inset:0; background:rgba(3,8,15,.72); z-index:80; display:flex; align-items:center; justify-content:center; padding:24px}
+  .modal{background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:22px; max-width:400px; width:100%}
+
+  .screen{animation:screenin .24s ease both}
+  @keyframes screenin{from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none}}
+  body.no-anim *, body.no-anim *::before, body.no-anim *::after{animation:none !important; transition:none !important}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none !important; transition:none !important}}
+  code{background:var(--panel); padding:2px 7px; border-radius:6px; font-size:12px; color:var(--amber)}
+</style>
+</head>
+<body>
+<div id="phone"></div>
+<div id="toasts" aria-live="polite"></div>
+<div id="modal-root"></div>
+<div id="demobadge">MAQUETTE · DÉMO — aucune connexion VPN réelle, données fictives</div>
+
+<script>
+'use strict';
+/* ═══════════════════════════════════════════════════════════════════════
+   GODSON VPN — maquette de référence (miroir du design system Android v2)
+   Données FICTIVES étiquetées. Ce fichier n'est PAS l'application : voir ../android/
+   ═══════════════════════════════════════════════════════════════════════ */
+
+const LS = {
+  get(k, d){ try{ const v = localStorage.getItem('gv_'+k); return v===null? d : JSON.parse(v); }catch(_){ return d; } },
+  set(k, v){ try{ localStorage.setItem('gv_'+k, JSON.stringify(v)); }catch(_){}}
+};
+
+const S = {
+  view:'splash', ob:0,
+  lang: LS.get('lang','fr'), theme: LS.get('theme','dark'),
+  reduce: LS.get('reduce', false), confirmDisc: LS.get('confirm', false),
+  simError: LS.get('simError', false), simOffline: LS.get('simOffline', false),
+  vpn:'disconnected', country: LS.get('country','GA'),
+  favs: LS.get('favs', {}), recents: LS.get('recents', []),
+  cat:'all', region:null, availOnly:false, sortLat:false, q:'',
+  loading:true, firstLoad:true,
+  session:{dur:0}, hist:[], device: LS.get('device', null),
+  faqOpen: LS.get('faqOpen', 0)
+};
+
+/* ── i18n — FR / EN / PT ───────────────────────────────────────────────── */
+const T = {
+fr:{tagline:'Votre connexion. Votre contrôle.', skip:'Ignorer', cont:'Continuer', start:'Commencer',
+ home:'Accueil', countries:'Pays', stats:'Statistiques', settings:'Paramètres',
+ off:'Votre connexion n\u2019est pas protégée par Godson VPN',
+ hintOff:'Appuyez sur le bouton pour établir le tunnel chiffré.',
+ connecting:'Connexion en cours…', preparing:'Préparation de la connexion…',
+ on:'Connexion sécurisée', hintOn:'Votre trafic transite par le tunnel WireGuard (simulation de l\u2019interface).',
+ reconnecting:'Reconnexion en cours…', disconnecting:'Déconnexion en cours…',
+ error:'La connexion a échoué', errMsg:'Impossible d\u2019établir le tunnel (erreur simulée pour la démonstration).',
+ retry:'Réessayer', connect:'Connecter', disconnect:'Déconnecter', details:'Détails', close:'Fermer', cancel:'Annuler',
+ quick:'Connexion rapide', chooseCountry:'Choisir un pays', selected:'Destination sélectionnée',
+ unavailable:'Indisponible', session:'Session', down:'Reçu', up:'Envoyé', tunnelUp:'Actif', tunnelDown:'Inactif',
+ demoNote:'Catalogue et mesures de démonstration — aucune donnée réelle.',
+ cpTitle:'Choisir un pays', cpSub:'Sélectionnez votre destination VPN avant de vous connecter.',
+ searchPh:'Rechercher un pays, une ville…', catAll:'Tous', catFav:'Favoris', catRecent:'Récents',
+ regAll:'Tous les continents', regAf:'Afrique', regEu:'Europe', regNa:'Amérique du Nord',
+ regSa:'Amérique du Sud', regAs:'Asie', regOc:'Océanie',
+ availOnly:'Disponibles uniquement', sortAlpha:'A–Z', sortLat:'Latence',
+ loadingMsg:'Chargement des destinations…',
+ eSearchT:'Aucun pays trouvé', eSearchB:'Modifiez la recherche ou les filtres pour voir plus de destinations.',
+ stUp:'Disponible', stBusy:'Occupé', stUnavail:'Indisponible', stSoon:'Bientôt disponible',
+ soonHint:'Aucun serveur opérationnel n\u2019est encore configuré dans ce pays.',
+ selToast:'Destination sélectionnée',
+ stTitle:'Statistiques', stSub:'Données de votre session, mesurées localement.',
+ current:'Session en cours', notConnected:'Non connecté', timeline:'Chronologie des sessions',
+ timelineEmpty:'Aucune session terminée pour le moment.', clear:'Effacer l\u2019historique',
+ clearT:'Effacer l\u2019historique local ?', clearB:'Les durées de session enregistrées seront supprimées. Action irréversible.',
+ cleared:'Historique effacé', trafficNote:'Les volumes de trafic réels seront mesurés par le tunnel (Phase 5). Aucune valeur fictive n\u2019est affichée.',
+ privacyNote:'Ces données restent sur votre appareil et ne sont jamais transmises.',
+ setTitle:'Paramètres', secGeneral:'Général', secConn:'Connexion', secData:'Données et confidentialité',
+ secHelp:'Assistance', secAbout:'À propos', theme:'Thème', thDark:'Sombre', thLight:'Clair',
+ reduce:'Réduire les animations', reduceD:'Désactive les effets visuels non essentiels.',
+ confirmD:'Confirmer avant de déconnecter', confirmDD:'Affiche une confirmation avant chaque déconnexion.',
+ simErrorL:'Simuler une erreur de connexion', simOfflineL:'Simuler l\u2019absence d\u2019Internet', simSec:'Démonstration (qualité)',
+ rowPrivacy:'Confidentialité et données', rowPrivacyD:'Protections, données conservées, effacement.',
+ rowSupport:'Aide et assistance', rowSupportD:'FAQ, diagnostic, signalement.',
+ rowProfile:'Profil et appareil', rowProfileD:'Mode sans compte, identifiant local.',
+ version:'Version de l\u2019application', discT:'Se déconnecter du VPN ?', discB:'Votre trafic ne sera plus protégé par Godson VPN.',
+ discOk:'Se déconnecter',
+ pTitle:'Confidentialité', pSub:'Ce qui est protégé, ce qui est conservé.', tunnelState:'État du tunnel',
+ protections:'Protections', pr1:'DNS acheminés dans le tunnel', pr1d:'Appliqué avec le tunnel, dès la Phase 5.',
+ pr2:'Routes IPv4 et IPv6 déclarées', pr2d:'Configuration du tunnel, dès la Phase 5.',
+ pr3:'VPN permanent (Android)', pr3d:'Réglage système fiable, compatible Godson VPN.',
+ pr4:'Blocage sans VPN (Android)', pr4d:'Réglage système : aucune connexion hors du tunnel.',
+ openVpn:'Ouvrir les réglages VPN Android (sur l\u2019appareil)', dataT:'Données conservées sur cet appareil',
+ dataB:'Vos préférences, favoris, destination choisie et un identifiant d\u2019appareil anonyme. Aucun historique de navigation. Aucune donnée personnelle obligatoire.',
+ clearData:'Effacer les données locales', clearDataT:'Effacer toutes les données locales ?',
+ clearDataB:'Préférences, favoris et historique seront supprimés. La maquette redémarrera comme au premier lancement.',
+ dataCleared:'Données locales effacées', policyT:'Politique de confidentialité',
+ policyB:'Version provisoire — la politique définitive sera rédigée en Phase 4 pour refléter exactement l\u2019infrastructure réelle. Principe déjà appliqué : pas de revente de données de navigation, jamais ; pas de journal de navigation ; minimisation des données.',
+ policyAction:'Lire la version provisoire',
+ supTitle:'Assistance', supSub:'Réponses, diagnostic et signalement.', faqTitle:'Questions fréquentes',
+ diag:'Diagnostic', dApp:'Application', dDev:'Navigateur', dNet:'Réseau', dOn:'Connecté à Internet', dOff:'Aucune connexion Internet',
+ dVpn:'État du tunnel', diagCopy:'Copier le diagnostic', copied:'Copié dans le presse-papiers',
+ repT:'Signaler un problème', repB:'Le canal de signalement sera ouvert avec l\u2019infrastructure réelle (Phase 4). En attendant, copiez le diagnostic technique pour le transmettre à l\u2019équipe du projet.',
+ proTitle:'Profil', noAcc:'Mode sans compte',
+ noAccB:'Godson VPN fonctionne sans compte : aucune adresse e-mail, aucun nom. Un identifiant d\u2019appareil anonyme est généré localement.',
+ devId:'Identifiant d\u2019appareil (local)', future:'Et plus tard ?',
+ futureB:'Si des offres ou des quotas le nécessitent, un compte sera proposé — jamais imposé sans nécessité — avec création, suppression et gestion des appareils.',
+ resetId:'Régénérer', resetDone:'Nouvel identifiant généré', copy:'Copier', ok:'OK',
+ faq:[
+  {q:'Godson VPN protège-t-il ma connexion maintenant ?', a:'L\u2019application affiche l\u2019état réel : tant que l\u2019infrastructure n\u2019est pas configurée (Phases 4-5), aucun tunnel n\u2019est établi. Le libellé « Connexion sécurisée » n\u2019apparaîtra qu\u2019après un tunnel vérifié.'},
+  {q:'Pourquoi Android demande-t-il une autorisation VPN ?', a:'Android exige votre consentement explicite avant qu\u2019une application ne crée un tunnel (VpnService). C\u2019est une protection normale du système, demandée une seule fois.'},
+  {q:'Les pays affichés ont-ils tous un serveur ?', a:'Non. Le catalogue liste des destinations potentielles. Seuls les pays associés à un serveur réellement configuré sont « Disponible ». Les autres affichent « Bientôt disponible » et ne peuvent pas déclencher de connexion.'},
+  {q:'Comment renforcer la protection au maximum ?', a:'Activez dans les réglages Android « VPN permanent » et « Bloquer les connexions sans VPN ». Godson VPN est compatible avec ces deux mécanismes.'},
+  {q:'Que conserve l\u2019application sur mon appareil ?', a:'Uniquement vos préférences, vos favoris et un historique local de session (effaçable). Aucun historique de navigation.'}
+ ]},
+en:{tagline:'Your connection. Your control.', skip:'Skip', cont:'Continue', start:'Get started',
+ home:'Home', countries:'Countries', stats:'Stats', settings:'Settings',
+ off:'Your connection is not protected by Godson VPN',
+ hintOff:'Tap the button to establish the encrypted tunnel.',
+ connecting:'Connecting…', preparing:'Preparing connection…',
+ on:'Secure connection', hintOn:'Your traffic flows through the WireGuard tunnel (interface simulation).',
+ reconnecting:'Reconnecting…', disconnecting:'Disconnecting…',
+ error:'Connection failed', errMsg:'Could not establish the tunnel (simulated error for this demo).',
+ retry:'Retry', connect:'Connect', disconnect:'Disconnect', details:'Details', close:'Close', cancel:'Cancel',
+ quick:'Quick connect', chooseCountry:'Choose a country', selected:'Selected destination',
+ unavailable:'Unavailable', session:'Session', down:'Received', up:'Sent', tunnelUp:'Active', tunnelDown:'Inactive',
+ demoNote:'Demo catalog and metrics — no real data.',
+ cpTitle:'Choose a country', cpSub:'Select your VPN destination before connecting.',
+ searchPh:'Search a country, a city…', catAll:'All', catFav:'Favorites', catRecent:'Recent',
+ regAll:'All continents', regAf:'Africa', regEu:'Europe', regNa:'North America',
+ regSa:'South America', regAs:'Asia', regOc:'Oceania',
+ availOnly:'Available only', sortAlpha:'A–Z', sortLat:'Latency',
+ loadingMsg:'Loading destinations…',
+ eSearchT:'No country found', eSearchB:'Change the search or filters to see more destinations.',
+ stUp:'Available', stBusy:'Busy', stUnavail:'Unavailable', stSoon:'Coming soon',
+ soonHint:'No operational server is configured in this country yet.',
+ selToast:'Destination selected',
+ stTitle:'Statistics', stSub:'Your session data, measured locally.',
+ current:'Current session', notConnected:'Not connected', timeline:'Session timeline',
+ timelineEmpty:'No finished session yet.', clear:'Clear history',
+ clearT:'Clear local history?', clearB:'Recorded session durations will be deleted. This cannot be undone.',
+ cleared:'History cleared', trafficNote:'Real traffic volumes will be measured by the tunnel (Phase 5). No fake values are shown.',
+ privacyNote:'This data stays on your device and is never transmitted.',
+ setTitle:'Settings', secGeneral:'General', secConn:'Connection', secData:'Data & privacy',
+ secHelp:'Support', secAbout:'About', theme:'Theme', thDark:'Dark', thLight:'Light',
+ reduce:'Reduce animations', reduceD:'Disables non-essential visual effects.',
+ confirmD:'Confirm before disconnect', confirmDD:'Shows a confirmation before each disconnection.',
+ simErrorL:'Simulate a connection error', simOfflineL:'Simulate no Internet', simSec:'Demo (quality)',
+ rowPrivacy:'Privacy & data', rowPrivacyD:'Protections, stored data, deletion.',
+ rowSupport:'Help & support', rowSupportD:'FAQ, diagnostics, reporting.',
+ rowProfile:'Profile & device', rowProfileD:'No-account mode, local identifier.',
+ version:'App version', discT:'Disconnect from the VPN?', discB:'Your traffic will no longer be protected by Godson VPN.',
+ discOk:'Disconnect',
+ pTitle:'Privacy', pSub:'What is protected, what is stored.', tunnelState:'Tunnel state',
+ protections:'Protections', pr1:'DNS routed through the tunnel', pr1d:'Applied with the tunnel, from Phase 5.',
+ pr2:'IPv4 and IPv6 routes declared', pr2d:'Tunnel configuration, from Phase 5.',
+ pr3:'Always-on VPN (Android)', pr3d:'Reliable system setting, compatible with Godson VPN.',
+ pr4:'Block without VPN (Android)', pr4d:'System setting: no connection outside the tunnel.',
+ openVpn:'Open Android VPN settings (on device)', dataT:'Data stored on this device',
+ dataB:'Your preferences, favorites, chosen destination and an anonymous device identifier. No browsing history. No mandatory personal data.',
+ clearData:'Clear local data', clearDataT:'Clear all local data?',
+ clearDataB:'Preferences, favorites and history will be deleted. The demo will restart like a first launch.',
+ dataCleared:'Local data cleared', policyT:'Privacy policy',
+ policyB:'Provisional version — the final policy will be written in Phase 4 to reflect the actual infrastructure. Principle already applied: browsing data is never sold; no browsing logs; data minimization.',
+ policyAction:'Read the provisional version',
+ supTitle:'Support', supSub:'Answers, diagnostics and reporting.', faqTitle:'Frequently asked questions',
+ diag:'Diagnostics', dApp:'Application', dDev:'Browser', dNet:'Network', dOn:'Connected to Internet', dOff:'No Internet connection',
+ dVpn:'Tunnel state', diagCopy:'Copy diagnostics', copied:'Copied to clipboard',
+ repT:'Report an issue', repB:'The reporting channel will open with the real infrastructure (Phase 4). Meanwhile, copy the technical diagnostics to send it to the project team.',
+ proTitle:'Profile', noAcc:'No-account mode',
+ noAccB:'Godson VPN works without an account: no email, no name. An anonymous device identifier is generated locally.',
+ devId:'Device identifier (local)', future:'And later?',
+ futureB:'If offers or quotas require it, an account will be proposed — never imposed without necessity — with creation, deletion and device management.',
+ resetId:'Regenerate', resetDone:'New identifier generated', copy:'Copy', ok:'OK',
+ faq:[
+  {q:'Does Godson VPN protect my connection now?', a:'The app shows the real state: until the infrastructure is configured (Phases 4-5), no tunnel is established. The “Secure connection” label only appears after a verified tunnel.'},
+  {q:'Why does Android ask for a VPN permission?', a:'Android requires your explicit consent before an app can create a tunnel (VpnService). It is a normal system protection, asked only once.'},
+  {q:'Do all listed countries have a server?', a:'No. The catalog lists potential destinations. Only countries with a really configured server show “Available”. Others show “Coming soon” and cannot trigger a connection.'},
+  {q:'How can I maximize protection?', a:'Enable “Always-on VPN” and “Block connections without VPN” in Android settings. Godson VPN is compatible with both.'},
+  {q:'What does the app store on my device?', a:'Only your preferences, favorites and a local session history (deletable). No browsing history.'}
+ ]},
+pt:{tagline:'A sua ligação. O seu controlo.', skip:'Ignorar', cont:'Continuar', start:'Começar',
+ home:'Início', countries:'Países', stats:'Estatísticas', settings:'Definições',
+ off:'A sua ligação não está protegida pela Godson VPN',
+ hintOff:'Toque no botão para estabelecer o túnel encriptado.',
+ connecting:'A ligar…', preparing:'A preparar a ligação…',
+ on:'Ligação segura', hintOn:'O seu tráfego passa pelo túnel WireGuard (simulação da interface).',
+ reconnecting:'A religar…', disconnecting:'A desligar…',
+ error:'A ligação falhou', errMsg:'Não foi possível estabelecer o túnel (erro simulado para a demonstração).',
+ retry:'Tentar novamente', connect:'Ligar', disconnect:'Desligar', details:'Detalhes', close:'Fechar', cancel:'Cancelar',
+ quick:'Ligação rápida', chooseCountry:'Escolher um país', selected:'Destino selecionado',
+ unavailable:'Indisponível', session:'Sessão', down:'Recebido', up:'Enviado', tunnelUp:'Ativo', tunnelDown:'Inativo',
+ demoNote:'Catálogo e medições de demonstração — sem dados reais.',
+ cpTitle:'Escolher um país', cpSub:'Selecione o seu destino VPN antes de ligar.',
+ searchPh:'Procurar um país, uma cidade…', catAll:'Todos', catFav:'Favoritos', catRecent:'Recentes',
+ regAll:'Todos os continentes', regAf:'África', regEu:'Europa', regNa:'América do Norte',
+ regSa:'América do Sul', regAs:'Ásia', regOc:'Oceania',
+ availOnly:'Apenas disponíveis', sortAlpha:'A–Z', sortLat:'Latência',
+ loadingMsg:'A carregar os destinos…',
+ eSearchT:'Nenhum país encontrado', eSearchB:'Altere a pesquisa ou os filtros para ver mais destinos.',
+ stUp:'Disponível', stBusy:'Ocupado', stUnavail:'Indisponível', stSoon:'Brevemente disponível',
+ soonHint:'Nenhum servidor operacional está ainda configurado neste país.',
+ selToast:'Destino selecionado',
+ stTitle:'Estatísticas', stSub:'Dados da sua sessão, medidos localmente.',
+ current:'Sessão atual', notConnected:'Não ligado', timeline:'Cronologia das sessões',
+ timelineEmpty:'Nenhuma sessão terminada por agora.', clear:'Limpar histórico',
+ clearT:'Limpar o histórico local?', clearB:'As durações registadas serão apagadas. Ação irreversível.',
+ cleared:'Histórico limpo', trafficNote:'Os volumes reais serão medidos pelo túnel (Fase 5). Nenhum valor fictício é apresentado.',
+ privacyNote:'Estes dados ficam no seu aparelho e nunca são transmitidos.',
+ setTitle:'Definições', secGeneral:'Geral', secConn:'Ligação', secData:'Dados e privacidade',
+ secHelp:'Ajuda', secAbout:'Sobre', theme:'Tema', thDark:'Escuro', thLight:'Claro',
+ reduce:'Reduzir animações', reduceD:'Desativa efeitos visuais não essenciais.',
+ confirmD:'Confirmar antes de desligar', confirmDD:'Mostra uma confirmação antes de cada desligamento.',
+ simErrorL:'Simular um erro de ligação', simOfflineL:'Simular sem Internet', simSec:'Demonstração (qualidade)',
+ rowPrivacy:'Privacidade e dados', rowPrivacyD:'Proteções, dados guardados, eliminação.',
+ rowSupport:'Ajuda e apoio', rowSupportD:'FAQ, diagnóstico, comunicação.',
+ rowProfile:'Perfil e aparelho', rowProfileD:'Modo sem conta, identificador local.',
+ version:'Versão da aplicação', discT:'Desligar da VPN?', discB:'O seu tráfego deixará de estar protegido pela Godson VPN.',
+ discOk:'Desligar',
+ pTitle:'Privacidade', pSub:'O que é protegido, o que é guardado.', tunnelState:'Estado do túnel',
+ protections:'Proteções', pr1:'DNS encaminhados pelo túnel', pr1d:'Aplicado com o túnel, a partir da Fase 5.',
+ pr2:'Rotas IPv4 e IPv6 declaradas', pr2d:'Configuração do túnel, a partir da Fase 5.',
+ pr3:'VPN sempre ativo (Android)', pr3d:'Registo de sistema fiável, compatível com a Godson VPN.',
+ pr4:'Bloquear sem VPN (Android)', pr4d:'Registo de sistema: nenhuma ligação fora do túnel.',
+ openVpn:'Abrir as definições VPN do Android (no aparelho)', dataT:'Dados guardados neste aparelho',
+ dataB:'As suas preferências, favoritos, destino escolhido e um identificador anónimo do aparelho. Sem histórico de navegação. Sem dados pessoais obrigatórios.',
+ clearData:'Apagar os dados locais', clearDataT:'Apagar todos os dados locais?',
+ clearDataB:'Preferências, favoritos e histórico serão apagados. A maquete reiniciará como na primeira utilização.',
+ dataCleared:'Dados locais apagados', policyT:'Política de privacidade',
+ policyB:'Versão provisória — a política definitiva será redigida na Fase 4 para refletir exatamente a infraestrutura real. Princípio já aplicado: nunca vender dados de navegação; sem registos de navegação; minimização de dados.',
+ policyAction:'Ler a versão provisória',
+ supTitle:'Apoio', supSub:'Respostas, diagnóstico e comunicação.', faqTitle:'Perguntas frequentes',
+ diag:'Diagnóstico', dApp:'Aplicação', dDev:'Navegador', dNet:'Rede', dOn:'Ligado à Internet', dOff:'Sem ligação à Internet',
+ dVpn:'Estado do túnel', diagCopy:'Copiar o diagnóstico', copied:'Copiado para a área de transferência',
+ repT:'Comunicar um problema', repB:'O canal de comunicação abrirá com a infraestrutura real (Fase 4). Entretanto, copie o diagnóstico técnico para enviar à equipa do projeto.',
+ proTitle:'Perfil', noAcc:'Modo sem conta',
+ noAccB:'A Godson VPN funciona sem conta: sem e-mail, sem nome. Um identificador anónimo do aparelho é gerado localmente.',
+ devId:'Identificador do aparelho (local)', future:'E mais tarde?',
+ futureB:'Se ofertas ou quotas o exigirem, uma conta será proposta — nunca imposta sem necessidade — com criação, eliminação e gestão de aparelhos.',
+ resetId:'Regenerar', resetDone:'Novo identificador gerado', copy:'Copiar', ok:'OK',
+ faq:[
+  {q:'A Godson VPN protege já a minha ligação?', a:'A aplicação mostra o estado real: enquanto a infraestrutura não estiver configurada (Fases 4-5), nenhum túnel é estabelecido. O rótulo « Ligação segura » só aparece após um túnel verificado.'},
+  {q:'Porque é que o Android pede uma autorização VPN?', a:'O Android exige o seu consentimento explícito antes de uma aplicação criar um túnel (VpnService). É uma proteção normal do sistema, pedida uma única vez.'},
+  {q:'Todos os países apresentados têm um servidor?', a:'Não. O catálogo lista destinos potenciais. Apenas os países com um servidor realmente configurado mostram « Disponível ». Os outros mostram « Brevemente disponível » e não podem desencadear uma ligação.'},
+  {q:'Como reforçar ao máximo a proteção?', a:'Ative « VPN sempre ativo » e « Bloquear ligações sem VPN » nas definições Android. A Godson VPN é compatível com ambos.'},
+  {q:'O que guarda a aplicação no meu aparelho?', a:'Apenas as suas preferências, favoritos e um histórico local de sessões (apagável). Sem histórico de navegação.'}
+ ]}
+};
+const t = k => (T[S.lang] && T[S.lang][k]) || T.fr[k] || k;
+
+/* ── Catalogue géographique : 30 pays, 6 régions (destinations POTENTIELLES) ──
+   Seuls les pays avec un « serveur » de démonstration sont connectables.
+   Miroir exact de data/model/Country.kt + DemoServerCatalog.kt (Android).  */
+const REGIONS = [
+  ['af','regAf'], ['eu','regEu'], ['na','regNa'], ['sa','regSa'], ['as','regAs'], ['oc','regOc']
+];
+const COUNTRIES = [
+ {code:'GA', flag:'🇬🇦', region:'af', st:'up',   ping:9,   rec:true,  name:{fr:'Gabon',en:'Gabon',pt:'Gabão'}, city:{fr:'Libreville',en:'Libreville',pt:'Libreville'}},
+ {code:'ZA', flag:'🇿🇦', region:'af', st:'up',   ping:64,  rec:false, name:{fr:'Afrique du Sud',en:'South Africa',pt:'África do Sul'}, city:{fr:'Johannesburg',en:'Johannesburg',pt:'Joanesburgo'}},
+ {code:'MA', flag:'🇲🇦', region:'af', st:'soon', name:{fr:'Maroc',en:'Morocco',pt:'Marrocos'}},
+ {code:'EG', flag:'🇪🇬', region:'af', st:'soon', name:{fr:'Égypte',en:'Egypt',pt:'Egito'}},
+ {code:'KE', flag:'🇰🇪', region:'af', st:'soon', name:{fr:'Kenya',en:'Kenya',pt:'Quénia'}},
+ {code:'NG', flag:'🇳🇬', region:'af', st:'up',   ping:35,  rec:false, name:{fr:'Nigeria',en:'Nigeria',pt:'Nigéria'}, city:{fr:'Lagos',en:'Lagos',pt:'Lagos'}},
+ {code:'GH', flag:'🇬🇭', region:'af', st:'soon', name:{fr:'Ghana',en:'Ghana',pt:'Gana'}},
+ {code:'FR', flag:'🇫🇷', region:'eu', st:'up',   ping:38,  rec:true,  name:{fr:'France',en:'France',pt:'França'}, city:{fr:'Paris',en:'Paris',pt:'Paris'}},
+ {code:'DE', flag:'🇩🇪', region:'eu', st:'busy', ping:49,  rec:false, load:88, name:{fr:'Allemagne',en:'Germany',pt:'Alemanha'}, city:{fr:'Francfort',en:'Frankfurt',pt:'Frankfurt'}},
+ {code:'BE', flag:'🇧🇪', region:'eu', st:'soon', name:{fr:'Belgique',en:'Belgium',pt:'Bélgica'}},
+ {code:'CH', flag:'🇨🇭', region:'eu', st:'soon', name:{fr:'Suisse',en:'Switzerland',pt:'Suíça'}},
+ {code:'GB', flag:'🇬🇧', region:'eu', st:'up',   ping:54,  rec:true,  name:{fr:'Royaume-Uni',en:'United Kingdom',pt:'Reino Unido'}, city:{fr:'Londres',en:'London',pt:'Londres'}},
+ {code:'ES', flag:'🇪🇸', region:'eu', st:'soon', name:{fr:'Espagne',en:'Spain',pt:'Espanha'}},
+ {code:'IT', flag:'🇮🇹', region:'eu', st:'soon', name:{fr:'Italie',en:'Italy',pt:'Itália'}},
+ {code:'NL', flag:'🇳🇱', region:'eu', st:'unavail', name:{fr:'Pays-Bas',en:'Netherlands',pt:'Países Baixos'}, city:{fr:'Amsterdam',en:'Amsterdam',pt:'Amsterdã'}},
+ {code:'PT', flag:'🇵🇹', region:'eu', st:'soon', name:{fr:'Portugal',en:'Portugal',pt:'Portugal'}},
+ {code:'SE', flag:'🇸🇪', region:'eu', st:'soon', name:{fr:'Suède',en:'Sweden',pt:'Suécia'}},
+ {code:'US', flag:'🇺🇸', region:'na', st:'up',   ping:118, rec:false, name:{fr:'États-Unis',en:'United States',pt:'Estados Unidos'}, city:{fr:'New York',en:'New York',pt:'Nova Iorque'}},
+ {code:'CA', flag:'🇨🇦', region:'na', st:'up',   ping:126, rec:false, name:{fr:'Canada',en:'Canada',pt:'Canadá'}, city:{fr:'Toronto',en:'Toronto',pt:'Toronto'}},
+ {code:'MX', flag:'🇲🇽', region:'na', st:'soon', name:{fr:'Mexique',en:'Mexico',pt:'México'}},
+ {code:'BR', flag:'🇧🇷', region:'sa', st:'soon', name:{fr:'Brésil',en:'Brazil',pt:'Brasil'}},
+ {code:'AR', flag:'🇦🇷', region:'sa', st:'soon', name:{fr:'Argentine',en:'Argentina',pt:'Argentina'}},
+ {code:'CL', flag:'🇨🇱', region:'sa', st:'soon', name:{fr:'Chili',en:'Chile',pt:'Chile'}},
+ {code:'JP', flag:'🇯🇵', region:'as', st:'up',   ping:186, rec:false, name:{fr:'Japon',en:'Japan',pt:'Japão'}, city:{fr:'Tokyo',en:'Tokyo',pt:'Tóquio'}},
+ {code:'SG', flag:'🇸🇬', region:'as', st:'soon', name:{fr:'Singapour',en:'Singapore',pt:'Singapura'}},
+ {code:'IN', flag:'🇮🇳', region:'as', st:'soon', name:{fr:'Inde',en:'India',pt:'Índia'}},
+ {code:'KR', flag:'🇰🇷', region:'as', st:'soon', name:{fr:'Corée du Sud',en:'South Korea',pt:'Coreia do Sul'}},
+ {code:'AE', flag:'🇦🇪', region:'as', st:'soon', name:{fr:'Émirats arabes unis',en:'United Arab Emirates',pt:'Emirados Árabes Unidos'}},
+ {code:'AU', flag:'🇦🇺', region:'oc', st:'soon', name:{fr:'Australie',en:'Australia',pt:'Austrália'}},
+ {code:'NZ', flag:'🇳🇿', region:'oc', st:'soon', name:{fr:'Nouvelle-Zélande',en:'New Zealand',pt:'Nova Zelândia'}}
+];
+const ctry = () => COUNTRIES.find(c => c.code === S.country) || COUNTRIES[0];
+const cname = c => c.name[S.lang] || c.name.fr;
+const ccity = c => c.city ? (c.city[S.lang] || c.city.fr) : null;
+const connectable = c => c && (c.st === 'up' || c.st === 'busy');
+const stKey = c => ({up:'stUp', busy:'stBusy', unavail:'stUnavail', soon:'stSoon'})[c.st];
+const stColor = c => ({up:'var(--green)', busy:'var(--amber)', unavail:'var(--red)', soon:'var(--muted)'})[c.st];
+const rank = c => c.st==='soon'?2 : c.st==='unavail'?1 : 0;
+
+/* ── Helpers ───────────────────────────────────────────────────────────── */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtDur = sec => { const h=Math.floor(sec/3600), m=Math.floor((sec%3600)/60), s2=sec%60;
+  return h>0 ? h+':'+String(m).padStart(2,'0')+':'+String(s2).padStart(2,'0')
+             : m+':'+String(s2).padStart(2,'0'); };
+function toast(msg, kind){ const el=document.createElement('div'); el.className='toast '+(kind||'');
+  el.textContent=msg; $('#toasts').appendChild(el);
+  setTimeout(()=>{ el.style.opacity='0'; el.style.transition='opacity .3s'; setTimeout(()=>el.remove(),320); },2600); }
+function openModal(html){ $('#modal-root').innerHTML =
+  '<div class="overlay" data-close="1"><div class="modal" data-stop="1">'+html+'</div></div>'; }
+function closeModal(){ $('#modal-root').innerHTML=''; }
+const LOGO = (size, mono) => '<svg width="'+size+'" height="'+size+'" viewBox="0 0 24 24" aria-label="Godson VPN">'
+ +'<defs>'
+ +'<linearGradient id="gvr'+size+'" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#246BFD"/><stop offset="1" stop-color="#21D4FD"/></linearGradient>'
+ +'<linearGradient id="gvv'+size+'" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2E5BFF"/><stop offset="1" stop-color="#21C9FD"/></linearGradient>'
+ +'</defs>'
+ +'<path fill-rule="evenodd" fill="'+(mono || 'url(#gvr'+size+')')+'" d="M12 1.2 C6.4 1.2 2.8 5.2 2.8 10 C2.8 14.4 6 17.4 12 22 C18 17.4 21.2 14.4 21.2 10 C21.2 5.2 17.6 1.2 12 1.2 Z M12 4.2 C8.4 4.2 5.8 6.6 5.8 10 C5.8 12.8 7.8 14.8 12 18 C16.2 14.8 18.2 12.8 18.2 10 C18.2 6.6 15.6 4.2 12 4.2 Z"/>'
+ +'<path fill-rule="evenodd" fill="'+(mono || 'url(#gvv'+size+')')+'" d="M7.4 7.2 L16.6 7.2 L12 17.2 Z M9.8 7.2 L14.2 7.2 L12 11.4 Z"/></svg>';
+const ICON = {
+ power:'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.2 6.3a8 8 0 1 0 11.6 0"/></svg>',
+ shield:'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 2.5 19.5 5.3 19.5 11 C19.5 16.2 16.3 19.9 12 21.5 7.7 19.9 4.5 16.2 4.5 11 L4.5 5.3 Z"/><path d="M12 7v10" stroke-linecap="round"/></svg>',
+ warn:'<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 22 20 2 20Z"/><path d="M12 9v5"/><circle cx="12" cy="17.2" r=".6" fill="currentColor"/></svg>',
+ home:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M3 11 12 3l9 8v9a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1Z"/></svg>',
+ globe:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3.5 9h17M3.5 15h17"/></svg>',
+ chart:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-8M21 20H3"/></svg>',
+ gear:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7"/></svg>',
+ person:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 5-5.5 8-5.5s6.5 1.5 8 5.5"/></svg>',
+ back:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+ heart:'<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 20.5 4.7 13.2a4.9 4.9 0 1 1 7-6.9l.3.4.3-.4a4.9 4.9 0 1 1 7 6.9Z"/></svg>',
+ heartFull:'<svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><path d="M12 20.5 4.7 13.2a4.9 4.9 0 1 1 7-6.9l.3.4.3-.4a4.9 4.9 0 1 1 7 6.9Z"/></svg>',
+ search:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>',
+ chev:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+ chevD:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l7 7 7-7"/></svg>',
+ refresh:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11A8 8 0 0 0 6.6 6.6L4 9"/><path d="M4 4v5h5"/><path d="M4 13a8 8 0 0 0 13.4 4.4L20 15"/><path d="M20 20v-5h-5"/></svg>',
+ bolt:'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M13 2 4.5 13.5H11L9.8 22 19.5 10H13Z"/></svg>',
+ globeBig:'<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3.5 9h17M3.5 15h17"/></svg>',
+ touch:'<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 3.5V6M12 18v2.5M3.5 12H6M18 12h2.5"/></svg>',
+ emptySearch:'<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M8 11h6"/></svg>',
+ emptyHist:'<svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>',
+ check:'<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16.5 9.5"/></svg>',
+ bug:'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="7" width="8" height="11" rx="4"/><path d="M9 7a3 3 0 0 1 6 0M3 13h5M16 13h5M5 19l3.5-2.5M19 19l-3.5-2.5M5 7l3.5 2.5M19 7l-3.5 2.5"/></svg>',
+ copy:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
+ lock:'<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
+ dns:'<svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/><circle cx="7" cy="7.5" r=".9" fill="currentColor"/><circle cx="7" cy="16.5" r=".9" fill="currentColor"/></svg>'
+};
+
+/* ── Machine à états (miroir de VpnStateMachine.kt) ────────────────────── */
+const NEXT = {
+ disconnected:{connecting:1},
+ preparing:{awaiting:1, connecting:1, error:1},
+ awaiting:{connecting:1, disconnected:1},
+ connecting:{connected:1, reconnecting:1, error:1, disconnecting:1},
+ connected:{disconnecting:1, reconnecting:1},
+ reconnecting:{connected:1, disconnecting:1, error:1},
+ disconnecting:{disconnected:1, error:1},
+ error:{disconnected:1, connecting:1}
+};
+function setState(v){ if(!NEXT[S.vpn] || !NEXT[S.vpn][v]) return; S.vpn=v; render(); }
+
+function connect(){
+  const c = ctry();
+  if(!connectable(c)){ toast(t('stSoon')+' — '+cname(c), 'err'); return; }
+  if(S.simOffline){ toast(t('errMsg'),'err'); return; }
+  if(S.vpn!=='disconnected' && S.vpn!=='error') return;
+  setState('connecting');
+  setTimeout(()=>{
+    if(S.simError){ setState('error'); toast(t('errMsg'),'err'); }
+    else{
+      S.vpn='connected';
+      S.session={dur:0};
+      S.recents=[c.code, ...S.recents.filter(x=>x!==c.code)].slice(0,5);
+      LS.set('recents', S.recents);
+      render();
+      toast('SIMULATION — ' + t('on'), 'warn');
+    }
+  }, 2200);
+}
+function doDisconnect(){
+  setState('disconnecting');
+  setTimeout(()=>{
+    const dur = S.session.dur;
+    if(dur>0){ S.hist.unshift({code:S.country, dur}); S.hist=S.hist.slice(0,12); }
+    setState('disconnected');
+  }, 850);
+}
+function disconnect(){
+  if(S.confirmDisc){
+    openModal('<h2>'+t('discT')+'</h2><p class="muted small" style="margin:10px 0 18px">'+t('discB')+'</p>'
+     +'<div class="row"><button class="btn ghost small" data-close="1">'+t('cancel')+'</button>'
+     +'<button class="btn danger small" data-act="confirmDisc">'+t('discOk')+'</button></div>');
+  } else doDisconnect();
+}
+
+/* ── Vues ──────────────────────────────────────────────────────────────── */
+function statusColor(v){ return {disconnected:'var(--muted)', preparing:'var(--cyan)', awaiting:'var(--cyan)',
+ connecting:'var(--cyan)', connected:'var(--green)', reconnecting:'var(--cyan)', disconnecting:'var(--cyan)',
+ error:'var(--red)', unavailable:'var(--red)'}[v] || 'var(--muted)'; }
+function statusText(v){ return {disconnected:t('off'), preparing:t('preparing'), awaiting:t('connecting'),
+ connecting:t('connecting'), connected:t('on'), reconnecting:t('reconnecting'),
+ disconnecting:t('disconnecting'), error:t('error')}[v] || ''; }
+
+function vSplash(){
+  return '<div class="center">'
+   + '<div style="filter:drop-shadow(0 0 30px rgba(33,212,253,.35)); animation:cardin .5s both">'+LOGO(110)+'</div>'
+   + '<div class="brandname">GODSON VPN</div><div class="tagline">'+t('tagline')+'</div>'
+   + '<div class="prog"><i></i></div></div>';
+}
+function vOnboarding(){
+  const pages = [
+   {ic:'<svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 2.5 19.5 5.3 19.5 11 C19.5 16.2 16.3 19.9 12 21.5 7.7 19.9 4.5 16.2 4.5 11 L4.5 5.3 Z"/><path d="M12 7v10" stroke-linecap="round"/><circle cx="12" cy="2.5" r="1" fill="currentColor"/></svg>',
+    ti:{fr:'Votre vie privée avant tout',en:'Your privacy first',pt:'A sua privacidade em primeiro lugar'},
+    bo:{fr:'Naviguez avec une protection supplémentaire grâce à un tunnel VPN chiffré.',en:'Browse with extra protection thanks to an encrypted VPN tunnel.',pt:'Navegue com proteção adicional graças a um túnel VPN encriptado.'}},
+   {ic:'<span style="color:var(--cyan)">'+ICON.globeBig+'</span>',
+    ti:{fr:'Choisissez votre destination',en:'Choose your destination',pt:'Escolha o seu destino'},
+    bo:{fr:'Sélectionnez votre pays parmi 30 destinations, puis connectez-vous.',en:'Select your country among 30 destinations, then connect.',pt:'Selecione o seu país entre 30 destinos e ligue-se.'}},
+   {ic:'<span style="color:var(--cyan)">'+ICON.touch+'</span>',
+    ti:{fr:'Connectez-vous en un geste',en:'Connect in one tap',pt:'Ligue-se num gesto'},
+    bo:{fr:'Une interface simple pour gérer votre connexion en toute transparence.',en:'A simple interface to manage your connection transparently.',pt:'Uma interface simples para gerir a sua ligação com total transparência.'}}
+  ];
+  const p = pages[S.ob];
+  return '<div class="center screen">'
+   + '<div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center">'
+   + '<div style="width:170px;height:170px;border-radius:50%;background:rgba(36,107,253,.1);display:flex;align-items:center;justify-content:center">'
+   + '<div style="width:140px;height:140px;border-radius:50%;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center">'+p.ic+'</div></div>'
+   + '<h1 style="margin-top:32px; max-width:300px; font-size:21px">'+p.ti[S.lang]+'</h1>'
+   + '<p class="muted" style="margin-top:12px; max-width:310px; font-size:14.5px">'+p.bo[S.lang]+'</p></div>'
+   + '<div class="dots">'+pages.map((_,i)=>'<i class="'+(i===S.ob?'on':'')+'"></i>').join('')+'</div>'
+   + (S.ob<2 ? '<button class="btn ghost" data-act="skipOb" style="margin-bottom:10px">'+t('skip')+'</button>' : '')
+   + '<button class="btn" data-act="nextOb">'+(S.ob<2 ? t('cont') : t('start'))+'</button></div>';
+}
+function ringsSVG(){
+  const col = statusColor(S.vpn);
+  let rings = '';
+  [[123,.10],[103,.16],[84,.22]].forEach(r=>{ rings += '<circle cx="123" cy="123" r="'+r[0]+'" fill="none" stroke="'+col+'" stroke-opacity="'+r[1]+'" stroke-width="1.2"/>'; });
+  const busy = ['connecting','preparing','reconnecting','disconnecting'].includes(S.vpn);
+  const connected = S.vpn==='connected';
+  let arc='';
+  if(busy) arc = '<g style="transform-origin:123px 123px; animation:spin 1.5s linear infinite">'
+    + '<circle cx="123" cy="123" r="105" fill="none" stroke="'+col+'" stroke-opacity=".15" stroke-width="2.6"/>'
+    + '<circle cx="123" cy="123" r="105" fill="none" stroke="'+col+'" stroke-width="2.6" stroke-linecap="round" stroke-dasharray="170 490"/></g>';
+  if(connected) arc = '<circle cx="123" cy="123" r="114" fill="none" stroke="var(--green)" stroke-opacity=".4" stroke-width="1.5" style="animation:breathe 1.6s infinite"/>';
+  return '<svg class="rings" viewBox="0 0 246 246">'+rings+arc+'</svg>';
+}
+function bigBtn(){
+  const labels = {disconnected:t('connect'), connecting:t('connecting'), preparing:t('preparing'),
+   connected:t('disconnect'), reconnecting:t('reconnecting'), disconnecting:t('disconnecting'),
+   error:t('retry'), unavailable:t('retry')};
+  const icons = {connected:ICON.shield, error:ICON.warn, unavailable:ICON.warn};
+  const busy = ['connecting','preparing','reconnecting','disconnecting'].includes(S.vpn);
+  const act = (S.vpn==='connected') ? 'disconnect' : ((S.vpn==='disconnected'||S.vpn==='error') ? 'connect' : 'none');
+  return '<button class="bigbtn st-'+S.vpn+'" data-act="'+act+'" aria-label="'+esc(labels[S.vpn])+'">'
+   + ringsSVG()
+   + '<span class="bicon">'+(icons[S.vpn]||ICON.power)+'</span>'
+   + '<span class="blabel">'+labels[S.vpn]+'</span></button>';
+}
+function netbg(){
+  const pts=[[.10,.14],[.24,.34],[.06,.55],[.18,.82],[.9,.12],[.78,.4],[.94,.6],[.8,.85]];
+  let svg='<svg class="netbg" width="100%" height="100%" preserveAspectRatio="none" viewBox="0 0 100 100">';
+  for(let i=0;i<pts.length-1;i++) svg+='<line x1="'+pts[i][0]*100+'" y1="'+pts[i][1]*100+'" x2="'+pts[i+1][0]*100+'" y2="'+pts[i+1][1]*100+'" stroke="#91A0B8" stroke-opacity=".08" stroke-width=".2"/>';
+  pts.forEach(p=>{ svg+='<circle cx="'+p[0]*100+'" cy="'+p[1]*100+'" r=".5" fill="#91A0B8" fill-opacity=".22"/>'; });
+  return svg+'</svg>';
+}
+function countryCardBig(){
+  const c = ctry();
+  const conn = connectable(c);
+  return '<div class="card"><div class="row">'
+   + '<span class="small muted" style="letter-spacing:1.2px; text-transform:uppercase; font-size:11px">'+t('selected')+'</span>'
+   + '<span class="badge-demo">DÉMO</span></div>'
+   + '<div class="row" style="margin-top:12px; justify-content:flex-start; gap:12px">'
+   + '<span class="flag" style="font-size:32px; width:auto">'+c.flag+'</span>'
+   + '<div style="flex:1; min-width:0"><div style="font-weight:600">'+cname(c)+(ccity(c)? ' — '+ccity(c):'')+'</div>'
+   + '<div class="small muted">WireGuard'+(c.rec? ' · ★':'')+'</div>'
+   + '<div class="st meta" style="margin-top:4px"><span class="sdot" style="background:'+stColor(c)+'"></span>'
+   + '<span style="color:'+stColor(c)+'">'+t(stKey(c))+'</span></div></div>'
+   + '<div style="text-align:right"><div class="ping" style="color:'+(conn?'var(--cyan)':'var(--muted)')+'">'
+   + (c.ping? c.ping+' ms<small>DÉMO</small>' : '—')+'</div></div></div>'
+   + '<button class="small" style="color:var(--cyan); margin-top:12px; display:inline-flex; align-items:center; gap:6px" data-act="goCountries">'+ICON.globe+' '+t('chooseCountry')+' '+ICON.chev+'</button></div>';
+}
+function vDashboard(){
+  const connected = S.vpn==='connected';
+  return headbar()
+   + '<div class="connectzone screen">'+netbg()+bigBtn()
+   + '<div style="position:absolute; bottom:8px; left:0; right:0">'
+   + '<div class="statusline" style="color:'+statusColor(S.vpn)+'">'+statusText(S.vpn)+'</div>'
+   + '<div class="hintline">'+(connected? t('hintOn') : t('hintOff'))+'</div></div></div>'
+   + ((S.vpn==='disconnected'||S.vpn==='error') ? '<div class="pad"><button class="btn" data-act="connect" style="display:flex;align-items:center;justify-content:center;gap:8px"><span style="display:inline-flex">'+ICON.bolt+'</span>'+t('quick')+'</button></div>' : '')
+   + (S.vpn==='error' ? '<div class="pad" style="padding-top:10px"><div class="card" style="border-color:rgba(255,83,100,.45)">'
+     + '<div class="small">'+t('errMsg')+'</div>'
+     + '<div class="row" style="margin-top:12px"><button class="btn small" data-act="connect">'+t('retry')+'</button>'
+     + '<button class="btn ghost small" data-act="errDetails">'+t('details')+'</button></div></div></div>' : '')
+   + '<div class="pad" style="padding-top:14px">'+countryCardBig()+'</div>'
+   + '<div class="pad"><div class="row" style="gap:10px; padding:14px 0 6px">'
+   + '<div class="tile"><div class="k">'+t('session')+'</div><div class="v" id="durv">'+(connected? fmtDur(S.session.dur) : '—')+'</div></div>'
+   + '<div class="tile"><div class="k">'+t('down')+'</div><div class="v muted small" style="font-size:13px">'+t('unavailable')+'</div></div>'
+   + '<div class="tile"><div class="k">'+t('up')+'</div><div class="v muted small" style="font-size:13px">'+t('unavailable')+'</div></div>'
+   + '</div><p class="small muted" style="padding:2px 2px 10px">'+t('demoNote')+'</p></div>';
+}
+function headbar(){
+  return '<div class="topbar">'+LOGO(28)
+   + '<span class="brand">GODSON VPN</span><span style="flex:1"></span>'
+   + '<span class="svc"><span class="dot" style="background:'+(S.vpn==='connected'?'var(--green)':'var(--muted)')+'"></span>'
+   + (S.vpn==='connected'? t('tunnelUp') : t('tunnelDown'))+'</span>'
+   + '<button class="iconbtn" data-act="goProfile" aria-label="profil">'+ICON.person+'</button>'
+   + '<button class="iconbtn" data-act="goSettings" aria-label="paramètres">'+ICON.gear+'</button></div>';
+}
+function nav(){
+  const items=[['dashboard',t('home'),ICON.home],['countries',t('countries'),ICON.globe],
+   ['stats',t('stats'),ICON.chart],['settings',t('settings'),ICON.gear]];
+  return '<nav class="nav">'+items.map(i=>'<button class="navitem '+(S.view===i[0]?'on':'')+'" data-act="go" data-v="'+i[0]+'">'
+   +'<span class="ind"></span>'+i[2]+'<span>'+i[1]+'</span></button>').join('')+'</nav>';
+}
+function filteredCountries(){
+  const q = S.q.trim().toLowerCase();
+  let list = COUNTRIES.filter(c=>{
+    if(S.cat==='fav' && !S.favs[c.code]) return false;
+    if(S.cat==='recent' && !S.recents.includes(c.code)) return false;
+    if(S.region && c.region!==S.region) return false;
+    if(S.availOnly && !connectable(c)) return false;
+    if(q){
+      const hay = (cname(c)+' '+c.name.en+' '+(ccity(c)||'')+' '+c.code).toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+  const cmpName = (a,b)=> cname(a).toLowerCase() < cname(b).toLowerCase() ? -1 : 1;
+  list = list.slice().sort((a,b)=>{
+    if(rank(a)!==rank(b)) return rank(a)-rank(b);
+    if(S.sortLat){
+      const pa = a.ping??9999, pb = b.ping??9999;
+      if(pa!==pb) return pa-pb;
+    }
+    return cmpName(a,b);
+  });
+  return list;
+}
+function countryRow(c, i){
+  const fav = !!S.favs[c.code];
+  const sel = c.code===S.country;
+  const conn = connectable(c);
+  const sub = ccity(c) || (c.st==='soon'? t('soonHint') : '');
+  return '<div class="srow'+(sel?' selected':'')+(c.st==='soon'?' soon':'')+'" style="animation-delay:'+Math.min(i,10)*30+'ms">'
+   + '<span class="flag">'+c.flag+'</span>'
+   + '<div class="meta" data-act="pick" data-id="'+c.code+'" role="button" tabindex="0" aria-disabled="'+(!conn)+'">'
+   + '<div class="name">'+cname(c)+'</div><div class="sub">'+esc(sub)+'</div>'
+   + '<div class="st"><span class="sdot" style="background:'+stColor(c)+'"></span>'
+   + '<span style="color:'+stColor(c)+'">'+t(stKey(c))+'</span>'
+   + (c.st==='busy'? ' · '+(c.load)+'%' : '')+'</div></div>'
+   + '<div class="ping" style="color:'+(conn?'var(--cyan)':'var(--muted)')+'">'
+   + (c.ping? c.ping+' ms<small>DÉMO</small>' : '—')+'</div>'
+   + '<button class="heart'+(fav?' on':'')+'" data-act="fav" data-id="'+c.code+'" aria-label="favori">'
+   + (fav? ICON.heartFull : ICON.heart)+'</button>'
+   + (sel? '<span class="selcheck">'+ICON.check+'</span>' : '')
+   + '</div>';
+}
+function vCountries(){
+  let body;
+  if(S.loading){
+    body = '<div class="small muted" style="padding:2px 24px 10px">'+t('loadingMsg')+'</div>'
+      + '<div class="pad slist">'+[0,1,2,3,4,5].map(()=>'<div class="skel"></div>').join('')+'</div>';
+  } else {
+    const list = filteredCountries();
+    if(list.length===0){
+      body = '<div class="center" style="flex:1"><div style="width:96px;height:96px;border-radius:50%;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted)">'+ICON.emptySearch+'</div>'
+       + '<h2 style="margin-top:18px">'+t('eSearchT')+'</h2><p class="muted small" style="margin-top:8px;max-width:290px">'+t('eSearchB')+'</p></div>';
+    } else {
+      body = '<div class="small muted" style="padding:2px 24px 4px">'+list.length+' / '+COUNTRIES.length+' · '+t('demoNote')+'</div>'
+       + '<div class="pad slist">'+list.map((c,i)=>countryRow(c,i)).join('')+'</div>';
+    }
+  }
+  return subhead(t('cpTitle'), t('cpSub'), null,
+    '<span class="badge-demo">DÉMO</span><button class="iconbtn" data-act="refresh" aria-label="refresh">'+ICON.refresh+'</button>')
+   + '<div class="pad"><div class="search">'+ICON.search
+   + '<input id="q" type="search" placeholder="'+t('searchPh')+'" value="'+esc(S.q)+'"></div>'
+   + '<div class="chiprow">'
+   + [['all',t('catAll')],['fav',t('catFav')],['recent',t('catRecent')]]
+     .map(x=>'<button class="chip '+(S.cat===x[0]?'on':'')+'" data-act="cat" data-v="'+x[0]+'">'+x[1]+'</button>').join('')
+   + '</div>'
+   + '<div class="chiprow">'
+   + '<button class="chip '+(S.region===null?'on':'')+'" data-act="region" data-v="">'+t('regAll')+'</button>'
+   + REGIONS.map(r=>'<button class="chip '+(S.region===r[0]?'on':'')+'" data-act="region" data-v="'+r[0]+'">'+t(r[1])+'</button>').join('')
+   + '</div>'
+   + '<div class="chiprow" style="padding-top:0">'
+   + '<button class="chip '+(S.availOnly?'on':'')+'" data-act="availOnly">'+t('availOnly')+'</button>'
+   + '<button class="chip '+(!S.sortLat?'on':'')+'" data-act="sortAlpha">'+t('sortAlpha')+'</button>'
+   + '<button class="chip '+(S.sortLat?'on':'')+'" data-act="sortLat">'+t('sortLat')+'</button>'
+   + '</div></div>' + body + nav();
+}
+function chartSVG(){
+  const data = S.hist.slice(0,12).reverse();
+  if(!data.length) return '';
+  const max = Math.max(...data.map(d=>d.dur), 1);
+  const w = 340, h = 90, bw = w/data.length;
+  let svg = '<svg viewBox="0 0 '+w+' '+h+'" style="width:100%; height:96px">';
+  data.forEach((d,i)=>{
+    const bh = Math.max(4, (d.dur/max)*(h-14));
+    svg += '<rect x="'+(i*bw+bw*0.28).toFixed(1)+'" y="'+(h-bh).toFixed(1)+'" width="'+(bw*0.44).toFixed(1)+'" height="'+bh.toFixed(1)+'" rx="4" fill="url(#gchart)"/>';
+  });
+  svg += '<defs><linearGradient id="gchart" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#246BFD"/><stop offset="1" stop-color="#21D4FD"/></linearGradient></defs></svg>';
+  return svg;
+}
+function vStats(){
+  const connected = S.vpn==='connected';
+  return subhead(t('stTitle'), t('stSub'), true)
+   + '<div class="pad"><div class="tile" style="'+(connected?'border-color:rgba(37,214,149,.5)':'')+'">'
+   + '<div class="k">'+t('current')+'</div><div class="v" style="font-size:19px; color:'+(connected?'var(--green)':'var(--muted)')+'">'
+   + (connected? fmtDur(S.session.dur) : t('notConnected'))+'</div></div>'
+   + '<div class="row" style="gap:10px; margin-top:10px">'
+   + '<div class="tile"><div class="k">'+t('down')+'</div><div class="v muted small" style="font-size:13px">'+t('unavailable')+'</div></div>'
+   + '<div class="tile"><div class="k">'+t('up')+'</div><div class="v muted small" style="font-size:13px">'+t('unavailable')+'</div></div></div>'
+   + '<p class="small muted" style="padding:8px 2px">'+t('trafficNote')+'</p>'
+   + '<div class="sect" style="margin-left:2px">'+t('timeline')+'</div>'
+   + (S.hist.length
+     ? '<div class="card">'+chartSVG()+'</div>'
+       + '<div class="slist" style="padding-top:10px">'+S.hist.map(h=>{ const c=COUNTRIES.find(x=>x.code===h.code)||COUNTRIES[0];
+         return '<div class="row card" style="padding:12px 14px"><div class="row" style="gap:10px; justify-content:flex-start">'
+         + '<span class="flag small">'+c.flag+'</span><div><div style="font-weight:600; font-size:14px">'+cname(c)+(ccity(c)?' — '+ccity(c):'')+'</div></div></div>'
+         + '<span style="font-weight:600; color:var(--cyan)">'+fmtDur(h.dur)+'</span></div>'; }).join('')+'</div>'
+       + '<div class="row" style="justify-content:flex-end"><button class="small" style="color:var(--red); padding:8px" data-act="clearHist">'+t('clear')+'</button></div>'
+     : '<div class="center" style="padding:26px"><div style="width:80px;height:80px;border-radius:50%;background:var(--panel);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--muted)">'+ICON.emptyHist+'</div>'
+       + '<p class="muted small" style="margin-top:12px">'+t('timelineEmpty')+'</p></div>')
+   + '<p class="small muted" style="padding:4px 2px 12px">'+t('privacyNote')+'</p></div>' + nav();
+}
+function sw(key, on){ return '<button class="switch '+(on?'on':'')+'" data-act="toggle" data-key="'+key+'" role="switch" aria-checked="'+on+'"></button>'; }
+function setrow(icon, label, desc, ctrl){ return '<div class="setrow"><span class="ic">'+icon+'</span>'
+ + '<span class="lab"><span class="t">'+label+'</span>'+(desc?'<span class="d">'+desc+'</span>':'')+'</span>'+ctrl+'</div>'; }
+function vSettings(){
+  return subhead(t('setTitle'), t('tagline'), true)
+   + '<div class="pad" style="padding-bottom:96px">'
+   + '<div class="sect" style="margin-left:0">'+t('secGeneral')+'</div>'
+   + '<div class="card" style="padding:4px">'
+   + setrow(ICON.gear, t('theme'), '', '<span class="themepick">'
+     + '<button class="'+(S.theme==='dark'?'on':'')+'" data-act="setTheme" data-v="dark">'+t('thDark')+'</button>'
+     + '<button class="'+(S.theme==='light'?'on':'')+'" data-act="setTheme" data-v="light">'+t('thLight')+'</button></span>')
+   + setrow(ICON.chart, t('reduce'), t('reduceD'), sw('reduce', S.reduce))
+   + setrow(ICON.lock, 'Langue', '', '<select data-set="lang">'
+     + [['fr','Français'],['en','English'],['pt','Português']].map(o=>'<option value="'+o[0]+'"'+(S.lang===o[0]?' selected':'')+'>'+o[1]+'</option>').join('')+'</select>')
+   + '</div>'
+   + '<div class="sect" style="margin-left:0">'+t('secConn')+'</div>'
+   + '<div class="card" style="padding:4px">'
+   + setrow(ICON.shield, t('confirmD'), t('confirmDD'), sw('confirmDisc', S.confirmDisc))
+   + setrow(ICON.bug, t('simErrorL'), '('+t('simSec')+')', sw('simError', S.simError))
+   + setrow(ICON.dns, t('simOfflineL'), '('+t('simSec')+')', sw('simOffline', S.simOffline))
+   + '</div>'
+   + '<div class="sect" style="margin-left:0">'+t('secData')+'</div>'
+   + '<div class="card" style="padding:4px">'
+   + setrow(ICON.lock, t('rowPrivacy'), t('rowPrivacyD'), '<button data-act="goPrivacy" style="color:var(--muted)">'+ICON.chev+'</button>')
+   + '</div>'
+   + '<div class="sect" style="margin-left:0">'+t('secHelp')+'</div>'
+   + '<div class="card" style="padding:4px">'
+   + setrow(ICON.check, t('rowSupport'), t('rowSupportD'), '<button data-act="goSupport" style="color:var(--muted)">'+ICON.chev+'</button>')
+   + setrow(ICON.person, t('rowProfile'), t('rowProfileD'), '<button data-act="goProfile" style="color:var(--muted)">'+ICON.chev+'</button>')
+   + '</div>'
+   + '<div class="sect" style="margin-left:0">'+t('secAbout')+'</div>'
+   + '<div class="card" style="padding:4px">'
+   + setrow(ICON.gear, t('version'), '', '<span class="small muted">0.3.0-phase2 · maquette</span>')
+   + '</div></div>' + nav();
+}
+function vPrivacy(){
+  return subhead(t('pTitle'), t('pSub'), true)
+   + '<div class="pad" style="padding-bottom:96px">'
+   + '<div class="sect" style="margin-left:0">'+t('tunnelState')+'</div>'
+   + '<div class="card"><div class="row" style="justify-content:flex-start; gap:10px">'
+   + '<span class="sdot" style="background:'+statusColor(S.vpn)+'"></span>'
+   + '<span style="font-weight:600; color:'+statusColor(S.vpn)+'">'+statusText(S.vpn)+'</span></div></div>'
+   + '<div class="sect" style="margin-left:0">'+t('protections')+'</div>'
+   + '<div class="card" style="padding:4px">'
+   + setrow(ICON.dns, t('pr1'), t('pr1d'), '')
+   + setrow(ICON.globe, t('pr2'), t('pr2d'), '')
+   + setrow(ICON.check, t('pr3'), t('pr3d'), ICON.check)
+   + setrow(ICON.shield, t('pr4'), t('pr4d'), ICON.check)
+   + '</div>'
+   + '<div class="sect" style="margin-left:0">'+t('dataT')+'</div>'
+   + '<div class="card"><p class="small muted">'+t('dataB')+'</p>'
+   + '<div class="row" style="margin-top:12px; justify-content:flex-start; gap:6px; flex-wrap:wrap">'
+   + '<button class="btn ghost small" data-act="policy" style="display:inline-flex;align-items:center;gap:7px">'+ICON.lock+' '+t('policyAction')+'</button>'
+   + '<button class="btn ghost small" data-act="clearData" style="color:var(--red)">'+t('clearData')+'</button></div></div></div>';
+}
+function vSupport(){
+  return subhead(t('supTitle'), t('supSub'), true)
+   + '<div class="pad" style="padding-bottom:96px">'
+   + '<div class="sect" style="margin-left:0">'+t('faqTitle')+'</div>'
+   + '<div style="display:flex; flex-direction:column; gap:8px">'
+   + T.fr.faq.map((_,i)=>{
+     const q = T[S.lang].faq[i].q, a = T[S.lang].faq[i].a;
+     return '<div class="faq'+(S.faqOpen===i?' open':'')+'"><button class="q" data-act="faq" data-v="'+i+'">'+esc(q)+ICON.chevD+'</button>'
+     + '<div class="a">'+esc(a)+'</div></div>'; }).join('')
+   + '</div>'
+   + '<div class="sect" style="margin-left:0">'+t('diag')+'</div>'
+   + '<div class="card">'
+   + '<div class="row" style="padding:4px 0"><span class="small muted">'+t('dApp')+'</span><span class="small">0.3.0-phase2</span></div>'
+   + '<div class="row" style="padding:4px 0"><span class="small muted">'+t('dDev')+'</span><span class="small">'+esc(navigator.userAgent.split(') ').pop().split(' ').slice(0,2).join(' '))+'</span></div>'
+   + '<div class="row" style="padding:4px 0"><span class="small muted">'+t('dNet')+'</span><span class="small" style="color:'+(navigator.onLine?'var(--green)':'var(--red)')+'">'+(navigator.onLine? t('dOn') : t('dOff'))+'</span></div>'
+   + '<div class="row" style="padding:4px 0"><span class="small muted">'+t('dVpn')+'</span><span class="small" style="color:'+statusColor(S.vpn)+'">'+statusText(S.vpn)+'</span></div>'
+   + '<button class="btn ghost small" data-act="copyDiag" style="margin-top:10px">'+t('diagCopy')+'</button></div>'
+   + '<div class="sect" style="margin-left:0">'+t('repT')+'</div>'
+   + '<div class="card"><p class="small muted">'+t('repB')+'</p>'
+   + '<button class="btn ghost small" data-act="report" style="margin-top:12px">'+ICON.bug+' '+t('repT')+'</button></div></div>';
+}
+function vProfile(){
+  if(!S.device){ S.device = 'gv-'+Math.random().toString(36).slice(2,10)+'-'+Math.random().toString(36).slice(2,10); LS.set('device', S.device); }
+  const masked = S.device.slice(0,10)+'…'+S.device.slice(-4);
+  return subhead(t('proTitle'), null, true)
+   + '<div class="pad" style="padding-bottom:96px">'
+   + '<div class="sect" style="margin-left:0">'+t('noAcc')+'</div>'
+   + '<div class="card"><div class="row" style="justify-content:flex-start; gap:14px; align-items:flex-start">'
+   + '<span class="ic" style="width:44px;height:44px;border-radius:12px;background:rgba(36,107,253,.14);display:flex;align-items:center;justify-content:center;color:var(--cyan)">'+ICON.person+'</span>'
+   + '<div><div style="font-weight:600">'+t('noAcc')+'</div>'
+   + '<p class="small muted" style="margin-top:6px">'+t('noAccB')+'</p></div></div></div>'
+   + '<div class="sect" style="margin-left:0">'+t('devId')+'</div>'
+   + '<div class="card"><code>'+masked+'</code>'
+   + '<div class="row" style="margin-top:12px; justify-content:flex-start; gap:6px">'
+   + '<button class="btn ghost small" data-act="copyId" style="display:inline-flex;align-items:center;gap:7px">'+ICON.copy+' '+t('copy')+'</button>'
+   + '<button class="btn ghost small" data-act="resetId">'+t('resetId')+'</button></div></div>'
+   + '<div class="sect" style="margin-left:0">'+t('future')+'</div>'
+   + '<div class="card"><p class="small muted">'+t('futureB')+'</p></div></div>';
+}
+function subhead(title, subtitle, back, trailing){
+  return '<div class="subhead">'+(back? '<button class="backbtn" data-act="back" aria-label="back">'+ICON.back+'</button>' : '')
+   + '<h1>'+title+'</h1>'+(trailing||'')+'</div>'
+   + (subtitle? '<div class="sub">'+subtitle+'</div>' : '');
+}
+function render(){
+  document.body.classList.toggle('light', S.theme==='light');
+  document.body.classList.toggle('no-anim', S.reduce);
+  document.documentElement.lang = S.lang;
+  const v = {splash:vSplash, onboarding:vOnboarding, dashboard:vDashboard, countries:vCountries,
+    stats:vStats, settings:vSettings, privacy:vPrivacy, support:vSupport, profile:vProfile}[S.view];
+  $('#phone').innerHTML = '<div class="screen" style="display:flex;flex-direction:column;min-height:100dvh">'+v()+'</div>';
+  const q = $('#q');
+  if(q){ q.addEventListener('input', e=>{ S.q=e.target.value;
+    const list = filteredCountries();
+    const wrap = document.querySelector('.slist');
+    if(wrap){ wrap.innerHTML = list.length? list.map((c,i)=>countryRow(c,i)).join('')
+      : '<div class="center"><h2>'+t('eSearchT')+'</h2><p class="muted small" style="margin-top:8px">'+t('eSearchB')+'</p></div>'; }
+  });}
+}
+
+/* ── Événements ────────────────────────────────────────────────────────── */
+document.addEventListener('click', e=>{
+  const closer = e.target.closest('[data-close]');
+  if(closer){ closeModal(); if(closer.dataset.act!=='confirmDisc') return; }
+  const el = e.target.closest('[data-act]');
+  if(!el){ if(e.target.classList && e.target.classList.contains('overlay')) closeModal(); return; }
+  if(e.target.closest('[data-stop]')) return;
+  const a = el.dataset.act;
+  switch(a){
+    case 'skipOb': S.view='dashboard'; LS.set('onboarded', true); render(); break;
+    case 'nextOb': if(S.ob<2){ S.ob++; render(); } else { S.view='dashboard'; LS.set('onboarded', true); render(); } break;
+    case 'go': S.view=el.dataset.v; render(); break;
+    case 'back': if(!['dashboard','countries','stats','settings'].includes(S.view)){ S.view='settings'; render(); } break;
+    case 'goCountries': S.view='countries'; render(); break;
+    case 'goSettings': S.view='settings'; render(); break;
+    case 'goPrivacy': S.view='privacy'; render(); break;
+    case 'goSupport': S.view='support'; render(); break;
+    case 'goProfile': S.view='profile'; render(); break;
+    case 'connect': connect(); break;
+    case 'disconnect': disconnect(); break;
+    case 'confirmDisc': closeModal(); doDisconnect(); break;
+    case 'errDetails': openModal('<h2>'+t('error')+'</h2><p class="small muted" style="margin:12px 0">'+t('errMsg')+'</p><code>SIMULATED_TUNNEL_FAILURE (démo)</code><div style="margin-top:18px"><button class="btn ghost" data-close="1">'+t('close')+'</button></div>'); break;
+    case 'pick': { const c = COUNTRIES.find(x=>x.code===el.dataset.id);
+      if(!c) break;
+      if(c.st==='soon'){ toast(t('stSoon')+' — '+cname(c)); break; }
+      if(c.st==='unavail'){ toast(t('stUnavail')+' — '+cname(c), 'err'); break; }
+      S.country=c.code; LS.set('country', c.code);
+      S.recents=[c.code, ...S.recents.filter(x=>x!==c.code)].slice(0,5);
+      LS.set('recents', S.recents);
+      render(); toast(t('selToast')+' — '+c.flag+' '+cname(c), 'ok');
+      setTimeout(()=>{ if(S.view==='countries'){ S.view='dashboard'; render(); } }, 480);
+      break; }
+    case 'fav': { const id=el.dataset.id; S.favs[id]=!S.favs[id]; if(!S.favs[id]) delete S.favs[id];
+      LS.set('favs', S.favs); render(); break; }
+    case 'cat': S.cat=el.dataset.v; render(); break;
+    case 'region': S.region=el.dataset.v||null; render(); break;
+    case 'availOnly': S.availOnly=!S.availOnly; render(); break;
+    case 'sortAlpha': S.sortLat=false; render(); break;
+    case 'sortLat': S.sortLat=true; render(); break;
+    case 'refresh': S.loading=true; render();
+      setTimeout(()=>{ S.loading=false; S.firstLoad=false; render(); }, 650); break;
+    case 'toggle': { const k=el.dataset.key; S[k]=!S[k]; LS.set(k, S[k]); render();
+      if(k==='reduce') toast(t('reduce')+' : '+(S[k]?'ON':'OFF')); break; }
+    case 'setTheme': S.theme=el.dataset.v; LS.set('theme', S.theme); render(); break;
+    case 'clearHist': openModal('<h2>'+t('clearT')+'</h2><p class="muted small" style="margin:10px 0 18px">'+t('clearB')+'</p>'
+      +'<div class="row"><button class="btn ghost small" data-close="1">'+t('cancel')+'</button>'
+      +'<button class="btn danger small" data-act="clearHistOk">'+t('ok')+'</button></div>'); break;
+    case 'clearHistOk': S.hist=[]; closeModal(); render(); toast(t('cleared'),'ok'); break;
+    case 'clearData': openModal('<h2>'+t('clearDataT')+'</h2><p class="muted small" style="margin:10px 0 18px">'+t('clearDataB')+'</p>'
+      +'<div class="row"><button class="btn ghost small" data-close="1">'+t('cancel')+'</button>'
+      +'<button class="btn danger small" data-act="clearDataOk">'+t('ok')+'</button></div>'); break;
+    case 'clearDataOk': ['lang','theme','reduce','confirm','simError','simOffline','favs','recents','country','device','faqOpen','onboarded']
+        .forEach(k=>localStorage.removeItem('gv_'+k));
+      location.reload(); break;
+    case 'policy': openModal('<h2>'+t('policyT')+'</h2><p class="small muted" style="margin:12px 0">'+t('policyB')+'</p>'
+      +'<button class="btn ghost" data-close="1">'+t('close')+'</button>'); break;
+    case 'faq': S.faqOpen = (S.faqOpen===Number(el.dataset.v))? -1 : Number(el.dataset.v); render(); break;
+    case 'copyDiag': copyText(diagText()); break;
+    case 'report': openModal('<h2>'+t('repT')+'</h2><p class="small muted" style="margin:12px 0">'+t('repB')+'</p>'
+      +'<button class="btn" data-act="copyDiag2">'+t('diagCopy')+'</button>'); break;
+    case 'copyDiag2': copyText(diagText()); closeModal(); break;
+    case 'copyId': copyText(S.device||''); break;
+    case 'resetId': S.device='gv-'+Math.random().toString(36).slice(2,10)+'-'+Math.random().toString(36).slice(2,10);
+      LS.set('device', S.device); render(); toast(t('resetDone'),'ok'); break;
+  }
+});
+function copyText(txt){
+  const done=()=>toast(t('copied'),'ok');
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(done); }
+  else { const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta);
+    ta.select(); try{ document.execCommand('copy'); }catch(_){ } ta.remove(); done(); }
+}
+function diagText(){
+  return 'Godson VPN — diagnostic (maquette, données non sensibles)\n'
+   + 'Version : 0.3.0-phase2\nNavigateur : '+navigator.userAgent+'\n'
+   + 'Réseau : '+(navigator.onLine? 'en ligne':'hors ligne')+'\nÉtat du tunnel : '+S.vpn+' (simulation)';
+}
+document.addEventListener('change', e=>{
+  if(e.target.dataset && e.target.dataset.set==='lang'){ S.lang=e.target.value; LS.set('lang', S.lang); render(); }
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && e.target.dataset && e.target.dataset.act==='pick'){ e.target.click(); }
+});
+
+/* ── Horloge de session (1 Hz — seulement pendant la connexion) ────────── */
+setInterval(()=>{
+  if(S.vpn!=='connected') return;
+  S.session.dur++;
+  const d=$('#durv'); if(d) d.textContent=fmtDur(S.session.dur);
+},1000);
+
+/* ── Démarrage : splash ~1,4 s, skeletons du catalogue en arrière-plan ──── */
+render();
+setTimeout(()=>{ S.loading=false; }, 650);
+setTimeout(()=>{ if(S.view==='splash'){
+  S.view = LS.get('onboarded', false) ? 'dashboard' : 'onboarding';
+  S.ob=0; render();
+}},1400);
+</script>
+</body>
+</html>

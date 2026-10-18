@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Langue principale : français. EN/PT en Phase 3 (values-en, values-pt). -->
+    <string name="app_name">Godson VPN</string>
+    <string name="tagline">Votre connexion. Votre contrôle.</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">Accueil</string>
+    <string name="nav_servers">Serveurs</string>
+    <string name="nav_stats">Statistiques</string>
+    <string name="nav_settings">Paramètres</string>
+    <string name="back">Retour</string>
+
+    <!-- Onboarding -->
+    <string name="skip">Ignorer</string>
+    <string name="btn_continue">Continuer</string>
+    <string name="btn_start">Commencer</string>
+    <string name="ob1_title">Votre vie privée avant tout</string>
+    <string name="ob1_body">Naviguez avec une protection supplémentaire grâce à un tunnel VPN chiffré.</string>
+    <string name="ob2_title">Choisissez votre destination</string>
+    <string name="ob2_body">Sélectionnez un emplacement et découvrez les serveurs disponibles.</string>
+    <string name="ob3_title">Connectez-vous en un geste</string>
+    <string name="ob3_body">Une interface simple pour gérer votre connexion en toute transparence.</string>
+
+    <!-- Tableau de bord -->
+    <string name="action_connect">Connecter</string>
+    <string name="action_disconnect">Déconnecter</string>
+    <string name="action_retry">Réessayer</string>
+    <string name="action_details">Détails</string>
+    <string name="action_quick_connect">Connexion rapide</string>
+    <string name="action_change_server">Changer de serveur</string>
+    <string name="action_ok">OK</string>
+    <string name="action_close">Fermer</string>
+    <string name="action_cancel">Annuler</string>
+    <string name="action_copy">Copier</string>
+    <string name="copied">Copié dans le presse-papiers</string>
+
+    <string name="status_disconnected">Votre connexion n\u2019est pas protégée par Godson VPN</string>
+    <string name="status_preparing">Préparation de la connexion…</string>
+    <string name="status_awaiting_permission">Autorisation VPN requise</string>
+    <string name="status_connecting">Connexion en cours…</string>
+    <string name="status_connected">Connexion sécurisée</string>
+    <string name="status_reconnecting">Reconnexion en cours…</string>
+    <string name="status_disconnecting">Déconnexion en cours…</string>
+    <string name="status_error">La connexion a échoué</string>
+    <string name="status_server_unavailable">Serveur injoignable</string>
+    <string name="status_hint_disconnected">Appuyez sur le bouton pour établir le tunnel chiffré.</string>
+    <string name="status_hint_connected">Votre trafic transite par le tunnel WireGuard. Vérifiez l\u2019adresse IP publique pour confirmer la protection.</string>
+
+    <string name="error_no_backend_title">Tunnel non disponible</string>
+    <string name="error_no_backend_body">Le client VPN est prêt, mais aucun backend n\u2019est encore configuré : la distribution des configurations de tunnel (Phase 4) et l\u2019intégration WireGuard (Phase 5) restent à brancher. Aucune connexion fictive n\u2019est établie.</string>
+    <string name="error_permission_denied">Autorisation VPN refusée. Android ne peut pas créer le tunnel sans votre accord : vous pouvez réessayer.</string>
+    <string name="error_connection_body">Le tunnel n\u2019a pas pu être établi : serveur ou réseau injoignable. Réessayez, ou choisissez un autre pays.</string>
+    <string name="selected_server">Serveur sélectionné</string>
+    <string name="value_unavailable">Indisponible</string>
+    <string name="demo_badge">DÉMO</string>
+    <string name="demo_note">Catalogue et mesures de démonstration — aucune donnée réelle. Le backend arrive en Phase 4.</string>
+
+    <string name="stat_session">Session</string>
+    <string name="stat_down">Reçu</string>
+    <string name="stat_up">Envoyé</string>
+    <string name="stat_protocol">Protocole</string>
+    <string name="stat_tunnel">Tunnel</string>
+    <string name="tunnel_up">Actif</string>
+    <string name="tunnel_down">Inactif</string>
+
+    <!-- Serveurs -->
+    <string name="servers_title">Emplacements</string>
+    <string name="servers_subtitle">Choisissez l\u2019emplacement de votre tunnel VPN.</string>
+    <string name="servers_search_hint">Rechercher un pays, une ville…</string>
+    <string name="servers_clear_search">Effacer la recherche</string>
+    <string name="servers_refresh">Actualiser</string>
+    <string name="cat_recommended">Recommandés</string>
+    <string name="cat_all">Tous</string>
+    <string name="cat_favorites">Favoris</string>
+    <string name="cat_recent">Récents</string>
+    <string name="servers_sort_latency">Trier par latence</string>
+    <string name="servers_loading">Vérification du catalogue…</string>
+    <string name="servers_empty_search_title">Aucun résultat</string>
+    <string name="servers_empty_search_body">Essayez un autre mot-clé ou revenez à la catégorie « Tous ».</string>
+    <string name="servers_empty_favorites_title">Aucun favori</string>
+    <string name="servers_empty_favorites_body">Touchez le cœur d\u2019un serveur pour le retrouver ici, même après fermeture de l\u2019application.</string>
+    <string name="servers_empty_recent_title">Aucun serveur récent</string>
+    <string name="servers_empty_recent_body">Les emplacements que vous utilisez apparaîtront ici.</string>
+    <string name="server_favorite_add">Ajouter aux favoris</string>
+    <string name="server_favorite_remove">Retirer des favoris</string>
+    <string name="server_quality">Qualité</string>
+    <string name="server_available">Disponible</string>
+    <string name="server_unavailable">Indisponible</string>
+
+    <!-- Statistiques -->
+    <string name="stats_title">Statistiques</string>
+    <string name="stats_subtitle">Données de votre session, mesurées localement.</string>
+    <string name="stats_current_session">Session en cours</string>
+    <string name="stats_not_connected">Non connecté</string>
+    <string name="stats_timeline">Chronologie des sessions</string>
+    <string name="stats_timeline_empty">Aucune session terminée pour le moment.</string>
+    <string name="stats_clear">Effacer l\u2019historique</string>
+    <string name="stats_clear_confirm_title">Effacer l\u2019historique local ?</string>
+    <string name="stats_clear_confirm_body">Les durées de session enregistrées sur cet appareil seront supprimées. Cette action est irréversible.</string>
+    <string name="stats_cleared">Historique effacé</string>
+    <string name="stats_traffic_note">Les volumes de trafic réel seront mesurés par le tunnel WireGuard à partir de la Phase 5. Aucune valeur fictive n\u2019est affichée.</string>
+    <string name="stats_privacy_note">Ces données restent sur votre appareil et ne sont jamais transmises.</string>
+    <string name="stats_duration_label">Durée</string>
+
+    <!-- Paramètres -->
+    <string name="settings_title">Paramètres</string>
+    <string name="s_general">Général</string>
+    <string name="s_connection">Connexion</string>
+    <string name="s_data">Données et confidentialité</string>
+    <string name="s_assistance">Assistance</string>
+    <string name="s_about">À propos</string>
+    <string name="set_theme">Thème</string>
+    <string name="theme_system">Système</string>
+    <string name="theme_dark">Sombre</string>
+    <string name="theme_light">Clair</string>
+    <string name="set_reduce_anim">Réduire les animations</string>
+    <string name="set_reduce_anim_desc">Désactive les effets visuels non essentiels.</string>
+    <string name="set_haptic">Retour haptique</string>
+    <string name="set_haptic_desc">Vibration légère sur les actions principales.</string>
+    <string name="set_confirm_disc">Confirmer avant de déconnecter</string>
+    <string name="set_confirm_disc_desc">Affiche une confirmation avant chaque déconnexion.</string>
+    <string name="set_keep_last">Retenir le dernier serveur</string>
+    <string name="set_keep_last_desc">Réutilise le dernier emplacement sélectionné.</string>
+    <string name="set_auto_reconnect">Reconnexion automatique</string>
+    <string name="set_auto_reconnect_desc">Retente la connexion si le tunnel est interrompu (actif à partir de la Phase 5).</string>
+    <string name="set_auto_connect">Connexion au démarrage</string>
+    <string name="set_auto_connect_desc">S\u2019appliquera dès que le tunnel réel sera actif, dans les limites d\u2019Android.</string>
+    <string name="row_privacy">Confidentialité et données</string>
+    <string name="row_privacy_desc">Protections, données conservées, effacement.</string>
+    <string name="row_support">Aide et assistance</string>
+    <string name="row_support_desc">FAQ, diagnostic, signalement.</string>
+    <string name="row_profile">Profil et appareil</string>
+    <string name="row_profile_desc">Mode sans compte, identifiant local.</string>
+    <string name="row_version">Version de l\u2019application</string>
+    <string name="disconnect_confirm_title">Se déconnecter du VPN ?</string>
+    <string name="disconnect_confirm_body">Votre trafic ne sera plus protégé par Godson VPN.</string>
+    <string name="disconnect_confirm">Se déconnecter</string>
+
+    <!-- Confidentialité -->
+    <string name="privacy_title">Confidentialité</string>
+    <string name="privacy_subtitle">Ce qui est protégé, ce qui est conservé.</string>
+    <string name="privacy_tunnel_state">État du tunnel</string>
+    <string name="privacy_protections">Protections</string>
+    <string name="prot_dns">DNS acheminés dans le tunnel</string>
+    <string name="prot_dns_desc">Appliqué avec le tunnel, dès la Phase 5.</string>
+    <string name="prot_routes">Routes IPv4 et IPv6 déclarées</string>
+    <string name="prot_routes_desc">Configuration du tunnel, dès la Phase 5.</string>
+    <string name="prot_alwayson">VPN permanent (Android)</string>
+    <string name="prot_alwayson_desc">Réglage système fiable, compatible Godson VPN.</string>
+    <string name="prot_killswitch">Blocage sans VPN (Android)</string>
+    <string name="prot_killswitch_desc">Réglage système : aucune connexion hors du tunnel.</string>
+    <string name="action_open_vpn_settings">Ouvrir les réglages VPN Android</string>
+    <string name="privacy_data_title">Données conservées sur cet appareil</string>
+    <string name="privacy_data_body">Vos préférences (thème, favoris, dernier serveur), l\u2019historique local de session si vous l\u2019activez, et un identifiant d\u2019appareil anonyme. Aucun historique de navigation. Aucune donnée personnelle obligatoire.</string>
+    <string name="privacy_clear_data">Effacer les données locales</string>
+    <string name="privacy_clear_confirm_title">Effacer toutes les données locales ?</string>
+    <string name="privacy_clear_confirm_body">Préférences, favoris et historique seront supprimés. L\u2019application redémarrera comme au premier lancement.</string>
+    <string name="privacy_cleared">Données locales effacées</string>
+    <string name="privacy_policy_title">Politique de confidentialité</string>
+    <string name="privacy_policy_body">Version provisoire — la politique définitive sera rédigée en Phase 4 pour refléter exactement l\u2019infrastructure réelle (données collectées, durée de conservation, prestataires, droits). Principe déjà appliqué : pas de revente de données de navigation, jamais ; pas de journal de navigation ; minimisation des données.</string>
+    <string name="privacy_policy_action">Lire la version provisoire</string>
+
+    <!-- Assistance -->
+    <string name="support_title">Assistance</string>
+    <string name="support_subtitle">Réponses, diagnostic et signalement.</string>
+    <string name="faq_title">Questions fréquentes</string>
+    <string name="faq1_q">Godson VPN protège-t-il ma connexion maintenant ?</string>
+    <string name="faq1_a">L\u2019application affiche l\u2019état réel : tant que l\u2019infrastructure de tunnel n\u2019est pas configurée (Phases 4 et 5), aucun tunnel n\u2019est établi et le statut reste honnête. Le libellé « Connexion sécurisée » n\u2019apparaîtra qu\u2019après un tunnel vérifié.</string>
+    <string name="faq2_q">Pourquoi Android demande-t-il une autorisation de connexion VPN ?</string>
+    <string name="faq2_a">Android exige votre consentement explicite avant qu\u2019une application ne crée un tunnel (VpnService). C\u2019est une protection normale du système, demandée une seule fois.</string>
+    <string name="faq3_q">Les serveurs affichés sont-ils réels ?</string>
+    <string name="faq3_a">Non. Le catalogue actuel est une démonstration clairement étiquetée. Les serveurs réels seront fournis par le backend sécurisé en Phase 4.</string>
+    <string name="faq4_q">Comment renforcer la protection au maximum ?</string>
+    <string name="faq4_a">Activez dans les réglages Android « VPN permanent » et « Bloquer les connexions sans VPN ». Godson VPN est compatible avec ces deux mécanismes système.</string>
+    <string name="faq5_q">Que conserve l\u2019application sur mon appareil ?</string>
+    <string name="faq5_a">Uniquement vos préférences, vos favoris et un historique local de session (effaçable). Aucun historique de navigation, aucune donnée personnelle obligatoire.</string>
+    <string name="diag_title">Diagnostic</string>
+    <string name="diag_app">Application</string>
+    <string name="diag_device">Appareil</string>
+    <string name="diag_android">Android</string>
+    <string name="diag_network">Réseau</string>
+    <string name="diag_online">Connecté à Internet</string>
+    <string name="diag_offline">Aucune connexion Internet</string>
+    <string name="diag_vpn_state">État du tunnel</string>
+    <string name="diag_copy">Copier le diagnostic</string>
+    <string name="report_title">Signaler un problème</string>
+    <string name="report_body">Le canal de signalement sera ouvert avec l\u2019infrastructure réelle (Phase 4). En attendant, vous pouvez copier le diagnostic technique pour le transmettre à l\u2019équipe du projet.</string>
+
+    <!-- Profil -->
+    <string name="profile_title">Profil</string>
+    <string name="profile_no_account_title">Mode sans compte</string>
+    <string name="profile_no_account_body">Godson VPN fonctionne sans compte : aucune adresse e-mail, aucun nom. Un identifiant d\u2019appareil anonyme est généré localement pour préparer l\u2019infrastructure de configuration.</string>
+    <string name="profile_device_id">Identifiant d\u2019appareil (local)</string>
+    <string name="profile_future_title">Et plus tard ?</string>
+    <string name="profile_future_body">Si des offres ou des quotas le nécessitent, un compte deviendra proposé — jamais imposé sans nécessité — avec création, suppression et gestion des appareils conformes aux règles de confidentialité du projet.</string>
+    <string name="profile_reset">Réinitialiser l\u2019identifiant local</string>
+    <string name="profile_reset_done">Nouvel identifiant généré</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_status">État de la connexion VPN</string>
+    <string name="notif_channel_status_desc">Affiche l\u2019état réel du tunnel VPN Godson.</string>
+    <string name="notif_connecting">Connexion VPN en cours…</string>
+    <string name="notif_connected">VPN connecté — %1$s</string>
+    <string name="notif_disconnected">VPN déconnecté</string>
+
+    <!-- Sélection du pays -->
+    <string name="country_picker_title">Choisir un pays</string>
+    <string name="country_picker_subtitle">Sélectionnez votre destination VPN avant de vous connecter.</string>
+    <string name="action_choose_country">Choisir un pays</string>
+    <string name="region_all">Tous les continents</string>
+    <string name="region_africa">Afrique</string>
+    <string name="region_europe">Europe</string>
+    <string name="region_north_america">Amérique du Nord</string>
+    <string name="region_south_america">Amérique du Sud</string>
+    <string name="region_asia">Asie</string>
+    <string name="region_oceania">Océanie</string>
+    <string name="filter_available_only">Disponibles uniquement</string>
+    <string name="sort_alpha">A–Z</string>
+    <string name="status_busy">Occupé</string>
+    <string name="status_planned">Bientôt disponible</string>
+    <string name="countries_loading">Chargement des destinations…</string>
+    <string name="countries_error_title">Impossible de charger le catalogue</string>
+    <string name="countries_error_body">Vérifiez votre connexion, puis réessayez. Le catalogue complet sera servi par le backend sécurisé (Phase 4).</string>
+    <string name="countries_empty_title">Aucun pays trouvé</string>
+    <string name="countries_empty_body">Modifiez la recherche ou les filtres pour voir plus de destinations.</string>
+    <string name="country_soon_hint">Aucun serveur opérationnel n\u2019est encore configuré dans ce pays.</string>
+    <string name="country_selected_toast">Destination sélectionnée</string>
+
+    <!-- GODSON PULSE — synthèse de qualité (démo = évaluation déterministe étiquetée) -->
+    <string name="pulse_summary_unavailable">Qualité réseau · évaluation indisponible</string>
+    <string name="pulse_summary_demo">Qualité réseau (démo) · recommandé : %1$s — %2$d/100 · %3$s</string>
+    <string name="pulse_summary_real">Qualité réseau (mesure réelle) · recommandé : %1$s — %2$d/100 · %3$s</string>
+    <string name="pulse_quality_excellent">Excellente</string>
+    <string name="pulse_quality_good">Bonne</string>
+    <string name="pulse_quality_fair">Correcte</string>
+    <string name="pulse_quality_poor">Dégradée</string>
+    <string name="pulse_action_use">Utiliser ce serveur</string>
+</resources>

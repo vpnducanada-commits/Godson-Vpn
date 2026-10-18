@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Icône adaptative — symbole officiel Godson VPN (anneau + V), zone sûre 66/108.
+     Calque monochrome : même tracé (le système applique sa teinte). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.45"
+        android:scaleY="0.45"
+        android:translateX="27"
+        android:translateY="27.9">
+        <path android:pathData="M60,6 C32,6 14,26 14,50 C14,72 30,87 60,110 C90,87 106,72 106,50 C106,26 88,6 60,6 Z
+M60,21 C42,21 29,33 29,50 C29,64 39,74 60,90 C81,74 91,64 91,50 C91,33 78,21 60,21 Z"
+            android:fillType="evenOdd">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="linear"
+                    android:startX="14" android:startY="110"
+                    android:endX="106" android:endY="6">
+                    <item android:offset="0" android:color="#FF246BFD"/>
+                    <item android:offset="1" android:color="#FF21D4FD"/>
+                </gradient>
+            </aapt:attr>
+        </path>
+        <path android:pathData="M37,36 L83,36 L60,86 Z M49,36 L71,36 L60,57 Z"
+            android:fillType="evenOdd">
+            <aapt:attr name="android:fillColor">
+                <gradient
+                    android:type="linear"
+                    android:startX="37" android:startY="60"
+                    android:endX="83" android:endY="60">
+                    <item android:offset="0" android:color="#FF2E5BFF"/>
+                    <item android:offset="1" android:color="#FF21C9FD"/>
+                </gradient>
+            </aapt:attr>
+        </path>
+    </group>
+</vector>

@@ -1,0 +1,13 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+build/
+/captures
+.externalNativeBuild
+.cxx
+# Aucun secret ne doit jamais être commité :
+keystore.properties
+*.jks
+*.keystore

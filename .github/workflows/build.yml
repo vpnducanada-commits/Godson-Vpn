@@ -1,0 +1,54 @@
+name: Build Android (tests + APK debug)
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:        # déclenchement manuel possible
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android          # racine Gradle réelle du projet
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: JDK 17 (Temurin) — exigé par AGP 8.x
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Diagnostic — versions réellement utilisées
+        run: |
+          java -version
+          ./gradlew --version
+
+      - name: Tests unitaires (:app:testDebugUnitTest — 51 attendus)
+        run: ./gradlew :app:testDebugUnitTest --stacktrace
+
+      - name: Diagnostic — résumé des échecs de tests (si échec)
+        if: failure()
+        run: |
+          find app/build/test-results -name "*.xml" | head -10 || true
+          grep -h "<failure\|<error" app/build/test-results/testDebugUnitTest/*.xml | head -20 || true
+
+      - name: Publier les rapports de tests (même en échec)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapports-tests
+          path: android/app/build/reports/tests/
+          if-no-files-found: warn
+
+      - name: Compilation APK debug
+        run: ./gradlew :app:assembleDebug --stacktrace
+
+      - name: Publier l'APK téléchargeable
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error

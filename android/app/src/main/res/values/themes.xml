@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Thème sombre natif pour un démarrage sans flash blanc (le thème complet vit dans Compose) -->
+    <style name="Theme.GodsonVPN" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/midnight_navy</item>
+        <item name="android:statusBarColor">@color/midnight_navy</item>
+        <item name="android:navigationBarColor">@color/midnight_navy</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>
