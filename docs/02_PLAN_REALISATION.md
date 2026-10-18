@@ -146,7 +146,7 @@ Préparé (code complet, câblé, vérifié statiquement — exécution sur appa
       Validation locale : code compilé (compileDebugKotlin ✓) et **51/51 tests passés** dans le
       bac à sable (JDK 17 + SDK 36 + Gradle 8.13 réels) ; seul le packaging final APK
       (mergeExtDexDebug) dépasse la RAM du bac à sable — les serveurs GitHub (7 Go) la font en
-      quelques minutes.
+      quelques minutes. **Validé en conditions réelles : run 39105516644 — BUILD SUCCESSFUL (tests 51/51 + APK 31 Mo), artefact récupéré.**
 - [ ] **Bloqué** : sonde réelle `HttpProber` (3 échantillons TCP, médiane) — requiert le backend
       Phase 4 ; à ce moment, injecter la sonde dans le conteneur suffit, l'UI ne change pas
 
