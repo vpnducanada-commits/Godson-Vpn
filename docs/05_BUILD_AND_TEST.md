@@ -1,9 +1,9 @@
 # GODSON VPN — Compilation, installation et tests (étapes exactes)
 
-Honnêteté préalable : **aucun de ces tests n'a été exécuté dans cet environnement**
-(pas de JDK 17 ni de SDK Android ici — constat vérifié en Phase 1). Les étapes sont
-documentées pour être exécutées sur un poste humain ; les résultats attendus sont
-indiqués, à confirmer à l'exécution.
+État vérifié : **les 61 tests unitaires passent en CI GitHub Actions** (JDK 17 + SDK 36
+officiels) et l'APK debug est construit à chaque push — artefact téléchargeable dans
+l'onglet Actions. La signature release et l'APK/AAB signé : voir docs/08. Les commandes
+ci-dessous restent valables pour un poste local ou Termux (docs/07).
 
 ---
 
@@ -35,11 +35,14 @@ cd android
 ./gradlew :app:testDebugUnitTest
 ```
 
-- Suites : `VpnStateMachineTest` (7 tests), `ServerFilterTest` (7), `CountryCatalogTest` (10).
+- Suites : `VpnStateMachineTest` (6), `ServerFilterTest` (7), `CountryCatalogTest` (12),
+  `PulseScoreTest` (13), `PulseEngineTest` (13), `SplitTunnelPolicyTest` (10).
 - Rapport HTML : `app/build/reports/tests/testDebugUnitTest/index.html`.
-- Attendu : **24 tests, 0 échec**. Ces tests couvrent : machine à états
-  (impossible d'afficher « Connecté » sans tunnel), filtres pays/serveurs,
-  intégrité du catalogue (30 pays, drapeaux, « bientôt disponible » non connectable).
+- Attendu : **61 tests, 0 échec**. Couverture : machine à états (impossible d'afficher
+  « Connecté » sans tunnel), filtres pays/serveurs (ordre des récents inclus), intégrité
+  du catalogue (30 pays, drapeaux, « bientôt disponible » non connectable), score PULSE
+  (bornes, renormalisation, classement), politique de tunnelage fractionné (modes,
+  garde-fous).
 
 ## 4. Compiler l'APK
 

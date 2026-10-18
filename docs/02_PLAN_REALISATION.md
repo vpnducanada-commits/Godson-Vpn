@@ -150,7 +150,8 @@ Préparé (code complet, câblé, vérifié statiquement — exécution sur appa
       aucune valeur inventée
 - [x] **CI GitHub Actions prête** : `.github/workflows/build.yml` créé (tests `:app:testDebugUnitTest`
       + APK debug publiés en artefact téléchargeable ; déclenchement au push ou manuel).
-      Validation locale : code compilé (compileDebugKotlin ✓) et **51/51 tests passés** dans le
+      Validation locale : code compilé (compileDebugKotlin ✓) et tests passés — 51/51 puis
+      **61/61** (10 tests de tunnelage fractionné ajoutés) — dans le
       bac à sable (JDK 17 + SDK 36 + Gradle 8.13 réels) ; seul le packaging final APK
       (mergeExtDexDebug) dépasse la RAM du bac à sable — les serveurs GitHub (7 Go) la font en
       quelques minutes. **Validé en conditions réelles : run 39105516644 — BUILD SUCCESSFUL (tests 51/51 + APK 31 Mo), artefact récupéré.**

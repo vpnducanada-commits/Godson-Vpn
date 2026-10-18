@@ -3,7 +3,7 @@
 > **Statut** : procédure préparée, non testée sur appareil (aucun Android dans l'environnement
 > de développement). Elle s'appuie sur des faits vérifiés du projet : le build Gradle est
 > 100 % JVM (Kotlin, d8/R8, packaging) sauf **un** binaire (`aapt2`), que Termux fournit en
-> version ARM native et qu'AGP permet de substituer. Les 51 tests et la compilation Kotlin
+> version ARM native et qu'AGP permet de substituer. Les 61 tests et la compilation Kotlin
 > sont **déjà prouvés** sur une machine plus faible qu'un téléphone récent.
 
 ## 0. Prérequis et attentes honnêtes
@@ -73,7 +73,7 @@ printf '\n# aapt2 natif ARM de Termux (spécifique à ce téléphone)\nandroid.a
 ```
 
 - Téléphone **4 Go** : remplacer `-Xmx2300m` par `-Xmx1500m`.
-- Résultats attendus : `51 tests, 0 échec` puis `BUILD SUCCESSFUL`.
+- Résultats attendus : `61 tests, 0 échec` puis `BUILD SUCCESSFUL`.
 - APK produit : `app/build/outputs/apk/debug/app-debug.apk`.
 
 ## 6. Récupérer et installer l'APK
